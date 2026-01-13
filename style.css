@@ -28,6 +28,12 @@ body {
     background-color: #f4f4f4;
 }
 
+#body {
+    max-width: 1440px;
+    margin: 0 auto;
+    background-color: #f5f5f5;
+}
+
 #body.no-scroll { overflow: hidden; }
 
 main {
@@ -41,15 +47,37 @@ main {
 }
 
 .pkm-card {
-    border-radius: 15px;
-    padding: 15px;
-    text-align: center;
-    cursor: pointer;
-    transition: transform 0.2s;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    position: relative;
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    color: white;
+    height: 150px;
+    overflow: hidden;
+}
+
+.pkm-card img {
+    width: 100px;
+    z-index: 2;
 }
 
 .pkm-card:hover { transform: scale(1.05); }
+
+.type-badge {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 5px 15px;
+    font-size: 12px;
+    margin-bottom: 5px;
+    display: inline-block;
+}
+
+.card-body {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
 
 #overlay {
     position: fixed;
@@ -73,10 +101,17 @@ main {
 @media (max-width: 320px) {
     main { grid-template-columns: 1fr; }
     h1 { font-size: 1.5rem; }
+    #contentBox {
+        grid-template-columns: 1fr;
+        padding: 10px;
+    }
 }
 
+.normal {background-color: #A8A899;}
+.fighting {background-color: #A84C3D;}
+.flying {background-color: #87B5E5;}
 .grass { background-color: #78C850; }
 .fire { background-color: #F08030; }
 .water { background-color: #6890F0; }
-.normal {background-color: #A8A899;}
+
 .poison {background-color: #864AB8;}

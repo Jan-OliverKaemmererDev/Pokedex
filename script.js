@@ -70,16 +70,56 @@ function closeDetailView() {
 }
 
 function getDetailTemplate(pkm) {
+    let name = pkm.name.charAt(0).toUpperCase() + pkm.name.slice(1);
+    let typeClass = pkm.types[0].type.name;
+    let img = pkm.sprites.other['official-artwork'].front_default;
     return `
         <div class="detail-card" onclick="event.stopPropagation()">
-            <button class="close-btn" onclick="closeDetailView()">X</button>
-            <h2>${pkm.name.toUpperCase()}</h2>
-            <img src="${pkm.sprites.other['official-artwork'].front_default}">
-            <div class="stats">${renderStats(pkm.stats)}</div>
-            <div class="nav-arrows">
-                <button onclick="navigatePkm(${pkm.id - 1})">←</button>
-                <button onclick="navigatePkm(${pkm.id + 1})">→</button>
+            <div class="detail-header ${typeClass}">
+                <button class="back-btn" onclick="closeDetailView()">←</button>
+                <div class="detail-title">
+                    <h2>${name}</h2>
+                    <p>#${pkm.id.toString().padStart(3, '0')}</p>
+                </div>
+                <div class="detail-types">${renderTypes(pkm.types)}</div>
+                <img class="main-img" src="${img}">
             </div>
+            <div class="detail-info">${renderDetailTabs(pkm)}</div>
+            ${renderNavArrows(pkm.id)}
+        </div>
+    `;
+}
+
+function renderNavArrows(currentId) {
+    return `
+        <div class="nav-arrows">
+            <button onclick="navigatePkm(${currentId - 1})">
+                <img src="./assets/img/arrow_left.png">
+            </button>
+            <button onclick="navigatePkm(${currentId + 1})">
+                <img src="./assets/img/arrow_right.png">
+            </button>
+        </div>
+    `;
+}
+
+async function navigatePkm(newId) {
+    if (newId < 1) return;
+    showLoadingSpinner();
+    let pkm = await fetchPokemonData(newId);
+    let overlay = document.getElementById('overlay');
+    overlay.innerHTML = getDetailTemplate(pkm);
+    hideLoadingSpinner();
+}
+
+function renderDetailTabs(pkm) {
+    return `
+        <div class="tabs">
+            <button onclick="showTab('about')">About</button>
+            <button onclick="showTab('stats')">Base Stats</button>
+        </div>
+        <div id="tabContent" class="tab-content">
+            ${renderStats(pkm.stats)}
         </div>
     `;
 }
@@ -95,12 +135,17 @@ function renderStats(stats) {
 function getPkmCardTemplate(pkm) {
     let name = pkm.name.charAt(0).toUpperCase() + pkm.name.slice(1);
     let mainType = pkm.types[0].type.name;
+    let img = pkm.sprites.other['official-artwork'].front_default;
     return `
         <div class="pkm-card ${mainType}" onclick="openDetailView(${pkm.id})">
-            <p>#${pkm.id}</p>
-            <h3>${name}</h3>
-            <img src="${pkm.sprites.front_default}" alt="${name}">
-            <div class="types">${renderTypes(pkm.types)}</div>
+            <div class="card-header">
+                <h3>${name}</h3>
+                <span>#${pkm.id.toString().padStart(3, '0')}</span>
+            </div>
+            <div class="card-body">
+                <div class="types-column">${renderTypes(pkm.types)}</div>
+                <img src="${img}" alt="${name}">
+            </div>
         </div>
     `;
 }
