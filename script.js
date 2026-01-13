@@ -1,0 +1,202 @@
+let allPokemon = [];
+let listStart = 1;
+const step = 25;
+
+function init() {
+    loadAndShowPkm();
+    renderRegionButtons();
+}
+
+async function loadAndShowPkm() {
+    showLoadingSpinner();
+    let newBatch = await fetchPkmRange(listStart, step);
+    allPokemon = allPokemon.concat(newBatch);
+    renderList(allPokemon);
+    listStart += step;
+    hideLoadingSpinner();
+}
+
+async function fetchPkmRange(start, count) {
+    let promises = [];
+    for (let i = start; i < start + count; i++) {
+        promises.push(fetchPokemonData(i));
+    }
+    return await Promise.all(promises);
+}
+
+async function fetchPokemonData(id) {
+    let response = await fetch("https://pokeapi.co/api/v2/pokemon/" + id);
+    return await response.json();
+}
+
+function showLoadingSpinner() {
+    document.getElementById('loadingSpinner').classList.remove('hidden');
+    document.getElementById('loadMoreBtn').disabled = true;
+}
+
+function hideLoadingSpinner() {
+    document.getElementById('loadingSpinner').classList.add('hidden');
+    document.getElementById('loadMoreBtn').disabled = false;
+}
+
+function renderList(pkmArray) {
+    let container = document.getElementById('contentBox');
+    container.innerHTML = "";
+    for (let i = 0; i < pkmArray.length; i++) {
+        container.innerHTML += getPkmCardTemplate(pkmArray[i]);
+    }
+}
+
+function renderTypes(types) {
+    let html = "";
+    for (let i = 0; i < types.length; i++) {
+        html += `<span class="type-badge ${types[i].type.name}">${types[i].type.name}</span>`;
+    }
+    return html;
+}
+
+function openDetailView(id) {
+    let pkm = allPokemon.find(function(p) { return p.id === id; });
+    if (!pkm) return;
+    let overlay = document.getElementById('overlay');
+    overlay.innerHTML = getDetailTemplate(pkm);
+    overlay.classList.remove('hidden');
+    document.getElementById('body').classList.add('no-scroll');
+}
+
+function closeDetailView() {
+    document.getElementById('overlay').classList.add('hidden');
+    document.getElementById('body').classList.remove('no-scroll');
+}
+
+function getDetailTemplate(pkm) {
+    return `
+        <div class="detail-card" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="closeDetailView()">X</button>
+            <h2>${pkm.name.toUpperCase()}</h2>
+            <img src="${pkm.sprites.other['official-artwork'].front_default}">
+            <div class="stats">${renderStats(pkm.stats)}</div>
+            <div class="nav-arrows">
+                <button onclick="navigatePkm(${pkm.id - 1})">←</button>
+                <button onclick="navigatePkm(${pkm.id + 1})">→</button>
+            </div>
+        </div>
+    `;
+}
+
+function renderStats(stats) {
+    let html = "";
+    for (let i = 0; i < stats.length; i++) {
+        html += `<div>${stats[i].stat.name}: ${stats[i].base_stat}</div>`;
+    }
+    return html;
+}
+
+function getPkmCardTemplate(pkm) {
+    let name = pkm.name.charAt(0).toUpperCase() + pkm.name.slice(1);
+    let mainType = pkm.types[0].type.name;
+    return `
+        <div class="pkm-card ${mainType}" onclick="openDetailView(${pkm.id})">
+            <p>#${pkm.id}</p>
+            <h3>${name}</h3>
+            <img src="${pkm.sprites.front_default}" alt="${name}">
+            <div class="types">${renderTypes(pkm.types)}</div>
+        </div>
+    `;
+}
+
+function createRegionButtons() {
+    let regions = [
+        { name: 'Kanto', start: 1, end: 151 },
+        { name: 'Johto', start: 152, end: 251 }
+    ];
+    let nav = document.getElementById('regionFilters');
+    for (let i = 0; i < regions.length; i++) {
+        nav.innerHTML += `<button onclick="loadRegion(${regions[i].start})">${regions[i].name}</button>`;
+    }
+}
+
+function searchPokemon() {
+    let inputField = document.getElementById('searchInput');
+    let query = inputField.value.toLowerCase();
+    if (query.length < 3) {
+        alert("Please enter at least 3 letters to search.");
+        return;
+    }
+    processSearch(query);
+}
+
+function processSearch(query) {
+    showLoadingSpinner(); // 
+    let filteredResults = [];
+    for (let i = 0; i < allPokemon.length; i++) {
+        let pkm = allPokemon[i];
+        if (pkm.name.toLowerCase().includes(query)) {
+            filteredResults.push(pkm);
+        }
+    }
+    displaySearchResults(filteredResults);
+}
+
+function displaySearchResults(results) {
+    if (results.length === 0) {
+        renderNoResultsFound();
+    } else {
+        renderList(results);
+    }
+    hideLoadingSpinner();
+}
+
+function renderNoResultsFound() {
+    let container = document.getElementById('contentBox');
+    container.innerHTML = `
+        <div class="no-results">
+            <p>No matching Pokémon found. Please try another name.</p>
+        </div>
+    `;
+}
+
+function getRegions() {
+    return [
+        { name: 'Kanto', start: 1, end: 151 },
+        { name: 'Johto', start: 152, end: 251 },
+        { name: 'Hoenn', start: 252, end: 386 },
+        { name: 'Sinnoh', start: 387, end: 493 },
+        { name: 'Unova', start: 494, end: 649 },
+        { name: 'Kalos', start: 650, end: 721 },
+        { name: 'Alola', start: 722, end: 809 },
+        { name: 'Galar', start: 810, end: 898 }
+    ];
+}
+
+function renderRegionButtons() {
+    let regions = getRegions();
+    let nav = document.getElementById('regionFilters');
+    nav.innerHTML = '';
+    for (let i = 0; i < regions.length; i++) {
+        nav.innerHTML += getRegionButtonTemplate(regions[i]);
+    }
+}
+
+function getRegionButtonTemplate(region) {
+    return `
+        <button class="region-btn" onclick="loadRegion(${region.start}, ${region.end})">
+            ${region.name}
+        </button>
+    `;
+}
+
+async function loadRegion(startId, endId) {
+    showLoadingSpinner();
+    allPokemon = [];
+    let count = endId - startId + 1;
+    allPokemon = await fetchPkmRange(startId, count);
+    renderList(allPokemon);
+    updateLoadMoreButton(endId);
+    hideLoadingSpinner();
+}
+
+function updateLoadMoreButton(endId) {
+    let btn = document.getElementById('loadMoreBtn');
+    btn.style.display = 'none'; 
+}
