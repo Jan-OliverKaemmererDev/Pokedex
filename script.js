@@ -73,18 +73,25 @@ function getDetailTemplate(pkm) {
     let name = pkm.name.charAt(0).toUpperCase() + pkm.name.slice(1);
     let typeClass = pkm.types[0].type.name;
     let img = pkm.sprites.other['official-artwork'].front_default;
+    
     return `
         <div class="detail-card" onclick="event.stopPropagation()">
             <div class="detail-header ${typeClass}">
-                <button class="back-btn" onclick="closeDetailView()">←</button>
-                <div class="detail-title">
+                <div class="header-top">
+                    <button class="back-btn" onclick="closeDetailView()">←</button>
+                </div>
+                <div class="detail-title-row">
                     <h2>${name}</h2>
                     <p>#${pkm.id.toString().padStart(3, '0')}</p>
                 </div>
                 <div class="detail-types">${renderTypes(pkm.types)}</div>
-                <img class="main-img" src="${img}">
+                <img class="main-img animate-wobble" src="${img}">
             </div>
-            <div class="detail-info">${renderDetailTabs(pkm)}</div>
+            
+            <div class="detail-info-container">
+                ${renderDetailTabs(pkm)}
+            </div>
+            
             ${renderNavArrows(pkm.id)}
         </div>
     `;
@@ -136,16 +143,22 @@ function getPkmCardTemplate(pkm) {
     let name = pkm.name.charAt(0).toUpperCase() + pkm.name.slice(1);
     let mainType = pkm.types[0].type.name;
     let img = pkm.sprites.other['official-artwork'].front_default;
+    
     return `
         <div class="pkm-card ${mainType}" onclick="openDetailView(${pkm.id})">
-            <div class="card-header">
-                <h3>${name}</h3>
-                <span>#${pkm.id.toString().padStart(3, '0')}</span>
+            <span class="card-id">#${pkm.id}</span>
+            <div class="card-content">
+                <div class="card-info-left">
+                    <h3>${name}</h3>
+                    <div class="types-column">
+                        ${renderTypes(pkm.types)}
+                    </div>
+                </div>
+                <div class="card-image-right">
+                    <img src="${img}" alt="${name}">
+                </div>
             </div>
-            <div class="card-body">
-                <div class="types-column">${renderTypes(pkm.types)}</div>
-                <img src="${img}" alt="${name}">
-            </div>
+            <div class="card-bg-icon"></div> 
         </div>
     `;
 }
