@@ -210,6 +210,59 @@ header {
     gap: 10px;
 }
 
+.nav-arrows {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 10px;
+    pointer-events: none;
+    z-index: 20;
+}
+
+.nav-arrows button {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.3);
+    border: none;
+    border-radius: 40px;
+    padding: 5px 10px;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: all 0.2s;
+    gap: 5px;
+}
+
+.nav-arrows button:hover {
+    background: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+.nav-arrows img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+
+.preview-img {
+    width: 60px !important;
+    height: 60px !important;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
+    transition: transform 0.2s;
+}
+
+.nav-arrows button:hover .preview-img {
+    transform: scale(1.1);
+}
+
+.arrow-icon {
+    width: 20px; 
+    height: 20px;
+}
+
 #searchInput {
     padding: 10px 15px;
     border-radius: 25px;
@@ -305,16 +358,16 @@ header {
 
 .loadMoreBtn {
     padding: 12px 30px;
-    border-radius: 25px; /* Gleicher Radius wie Search- und Regions-Buttons */
+    border-radius: 25px;
     border: none;
-    background-color: #313131; /* Gleiches dunkles Grau wie der Search-Button */
+    background-color: #313131;
     color: white;
     font-weight: bold;
     font-size: 16px;
     cursor: pointer;
     transition: all 0.2s ease;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    margin: 40px 0 100px 0; /* Großer Abstand unten (100px) für den Spinner */
+    margin: 40px 0 100px 0;
     display: block;
 }
 
@@ -340,7 +393,7 @@ header {
 
 #regionFilters {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* Genau 4 Spalten */
+    grid-template-columns: repeat(4, 1fr);
     gap: 10px;
     width: 100%;
     max-width: 1000px;
@@ -349,10 +402,9 @@ header {
     box-sizing: border-box;
 }
 
-/* Einfacher Button-Stil (ähnlich dem Search-Button) */
 .region-btn {
     padding: 10px 15px;
-    border-radius: 25px; /* Rund wie der Search-Button */
+    border-radius: 25px;
     border: none;
     color: white;
     font-weight: bold;
@@ -367,15 +419,14 @@ header {
     transform: scale(1.02);
 }
 
-/* Angenehme, flache Einzelfarben pro Region */
-.btn-kanto { background-color: #ff5959; }  /* Sanftes Rot */
-.btn-johto { background-color: #ffbd48; }  /* Sanftes Gold/Orange */
-.btn-hoenn { background-color: #48d0b0; }  /* Pastell-Grün/Blau */
-.btn-sinnoh { background-color: #919191; } /* Neutrales Grau */
-.btn-unova { background-color: #4b4b4b; }  /* Dunkles Grau/Schwarz */
-.btn-kalos { background-color: #3b82f6; }  /* Klares Blau */
-.btn-alola { background-color: #f472b6; }  /* Rosa/Sonne */
-.btn-galar { background-color: #0ea5e9; }  /* Himmelblau */
+.btn-kanto { background-color: #ff5959; }
+.btn-johto { background-color: #ffbd48; }
+.btn-hoenn { background-color: #48d0b0; }
+.btn-sinnoh { background-color: #919191; }
+.btn-unova { background-color: #4b4b4b; }
+.btn-kalos { background-color: #3b82f6; }
+.btn-alola { background-color: #f472b6; }
+.btn-galar { background-color: #0ea5e9; }
 
 @keyframes liveWobble {
     0% { transform: translateX(-50%) scale(1); }
@@ -398,7 +449,7 @@ header {
 
 @media (max-width: 768px) {
     #regionFilters {
-        grid-template-columns: repeat(2, 1fr); /* 2 Spalten auf kleinen Displays */
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 

@@ -1,6 +1,7 @@
 let allPokemon = [];
 let listStart = 1;
 const step = 25;
+let currentMaxId = 898;
 
 function init() {
     loadAndShowPkm();
@@ -8,12 +9,20 @@ function init() {
 }
 
 async function loadAndShowPkm() {
+    if (listStart > currentMaxId) return;
     showLoadingSpinner();
-    let newBatch = await fetchPkmRange(listStart, step);
-    allPokemon = allPokemon.concat(newBatch);
-    renderList(allPokemon);
-    listStart += step;
+    let remaining = currentMaxId - listStart + 1;
+    let currentStep = Math.min(step, remaining);
+    if (currentStep > 0) {
+        let newBatch = await fetchPkmRange(listStart, currentStep);
+        allPokemon = allPokemon.concat(newBatch);
+        renderList(allPokemon);
+        listStart += currentStep;
+    }
     hideLoadingSpinner();
+    if (listStart > currentMaxId) {
+        document.getElementById('loadMoreBtn').style.display = 'none';
+    }
 }
 
 async function fetchPkmRange(start, count) {
@@ -55,11 +64,11 @@ function renderTypes(types) {
     return html;
 }
 
-function openDetailView(id) {
+async function openDetailView(id) {
     let pkm = allPokemon.find(function(p) { return p.id === id; });
     if (!pkm) return;
     let overlay = document.getElementById('overlay');
-    overlay.innerHTML = getDetailTemplate(pkm);
+    overlay.innerHTML = await getDetailTemplate(pkm);
     overlay.classList.remove('hidden');
     document.getElementById('body').classList.add('no-scroll');
 }
@@ -69,7 +78,7 @@ function closeDetailView() {
     document.getElementById('body').classList.remove('no-scroll');
 }
 
-function getDetailTemplate(pkm) {
+async function getDetailTemplate(pkm) {
     let name = pkm.name.charAt(0).toUpperCase() + pkm.name.slice(1);
     let typeClass = pkm.types[0].type.name;
     let img = pkm.sprites.other['official-artwork'].front_default;
@@ -92,7 +101,7 @@ function getDetailTemplate(pkm) {
                 ${renderDetailTabs(pkm)}
             </div>
             
-            ${renderNavArrows(pkm.id)}
+            ${await renderNavArrows(pkm.id)}
         </div>
     `;
 }
@@ -115,8 +124,30 @@ async function navigatePkm(newId) {
     showLoadingSpinner();
     let pkm = await fetchPokemonData(newId);
     let overlay = document.getElementById('overlay');
-    overlay.innerHTML = getDetailTemplate(pkm);
+    overlay.innerHTML = await getDetailTemplate(pkm);
     hideLoadingSpinner();
+}
+
+async function renderNavArrows(currentId) {
+    let prevId = currentId - 1;
+    let nextId = currentId + 1;
+    
+    // Bilder laden (Falls ID < 1, gibt es kein Bild)
+    let prevImg = prevId >= 1 ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${prevId}.png` : "";
+    let nextImg = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${nextId}.png`;
+
+    return `
+        <div class="nav-arrows">
+            <button class="nav-btn-left" onclick="navigatePkm(${prevId})" ${prevId < 1 ? 'style="visibility:hidden"' : ''}>
+                <img src="./assets/img/arrow_left.png" class="arrow-icon">
+                <img src="${prevImg}" class="preview-img">
+            </button>
+            <button class="nav-btn-right" onclick="navigatePkm(${nextId})">
+                <img src="${nextImg}" class="preview-img">
+                <img src="./assets/img/arrow_right.png" class="arrow-icon">
+            </button>
+        </div>
+    `;
 }
 
 function renderDetailTabs(pkm) {
@@ -185,7 +216,7 @@ function searchPokemon() {
 }
 
 function processSearch(query) {
-    showLoadingSpinner(); // 
+    showLoadingSpinner();
     let filteredResults = [];
     for (let i = 0; i < allPokemon.length; i++) {
         let pkm = allPokemon[i];
@@ -246,16 +277,20 @@ function getRegionButtonTemplate(region) {
 }
 
 async function loadRegion(startId, endId) {
+    currentMaxId = endId;
     showLoadingSpinner();
     allPokemon = [];
-    let count = endId - startId + 1;
+    listStart = startId;
+    let remaining = endId - startId + 1;
+    let count = Math.min(step, remaining);
     allPokemon = await fetchPkmRange(startId, count);
+    listStart += count;
     renderList(allPokemon);
-    updateLoadMoreButton(endId);
-    hideLoadingSpinner();
-}
-
-function updateLoadMoreButton(endId) {
     let btn = document.getElementById('loadMoreBtn');
-    btn.style.display = 'none'; 
+    if (listStart <= currentMaxId) {
+        btn.style.display = 'block';
+    } else {
+        btn.style.display = 'none';
+    }
+    hideLoadingSpinner();
 }
