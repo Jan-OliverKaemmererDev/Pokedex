@@ -237,8 +237,9 @@ function renderRegionButtons() {
 }
 
 function getRegionButtonTemplate(region) {
+    let regionClass = region.name.toLowerCase();
     return `
-        <button class="region-btn" onclick="loadRegion(${region.start}, ${region.end})">
+        <button class="region-btn btn-${regionClass}" onclick="loadRegion(${region.start}, ${region.end})">
             ${region.name}
         </button>
     `;

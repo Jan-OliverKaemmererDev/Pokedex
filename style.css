@@ -31,7 +31,7 @@ body {
     max-width: 1440px;
     width: 100%;
     margin: 0 auto;
-    background-color: #fef7e9c8;
+    background-color: #8fd0ffc8;
     box-shadow: 0 0 20px rgba(0,0,0,0.05);
 }
 
@@ -56,7 +56,7 @@ main {
     overflow: hidden;
     transition: transform 0.1s ease-in-out;
     cursor: pointer;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
 }
 
 .card-id {
@@ -136,6 +136,7 @@ main {
 
 .pkm-card:hover .card-image-right img {
     transform: scale(1.1);
+    filter: drop-shadow(0 5px 5px rgba(0,0,0,0.6));
 }
 
 .card-bg-icon {
@@ -179,7 +180,7 @@ main {
 }
 
 header {
-    background-color: #e3350d;
+    background-color: #fb7676;
     width: 100%;
     padding: 20px 0;
     display: flex;
@@ -192,16 +193,16 @@ header {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 15px; /* Abstand zwischen Logo und Suche */
+    gap: 15px;
     width: 100%;
     max-width: 1440px;
 }
 
 .main-logo {
-    height: 80px; /* Hier kannst du die Größe des Logos perfekt steuern */
+    height: 80px;
     width: auto;
     object-fit: contain;
-    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.8));
 }
 
 .search-area {
@@ -302,6 +303,80 @@ header {
     color: #000;
 }
 
+.loadMoreBtn {
+    padding: 12px 30px;
+    border-radius: 25px; /* Gleicher Radius wie Search- und Regions-Buttons */
+    border: none;
+    background-color: #313131; /* Gleiches dunkles Grau wie der Search-Button */
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    margin: 40px 0 100px 0; /* Großer Abstand unten (100px) für den Spinner */
+    display: block;
+}
+
+.loadMoreBtn:hover {
+    background-color: #505050;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.loadMoreBtn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+#loadingSpinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 50px; 
+}
+
+#regionFilters {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* Genau 4 Spalten */
+    gap: 10px;
+    width: 100%;
+    max-width: 1000px;
+    margin: 20px auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+/* Einfacher Button-Stil (ähnlich dem Search-Button) */
+.region-btn {
+    padding: 10px 15px;
+    border-radius: 25px; /* Rund wie der Search-Button */
+    border: none;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: filter 0.2s, transform 0.1s;
+    font-size: 14px;
+    box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.6);
+}
+
+.region-btn:hover {
+    filter: brightness(0.9);
+    transform: scale(1.02);
+}
+
+/* Angenehme, flache Einzelfarben pro Region */
+.btn-kanto { background-color: #ff5959; }  /* Sanftes Rot */
+.btn-johto { background-color: #ffbd48; }  /* Sanftes Gold/Orange */
+.btn-hoenn { background-color: #48d0b0; }  /* Pastell-Grün/Blau */
+.btn-sinnoh { background-color: #919191; } /* Neutrales Grau */
+.btn-unova { background-color: #4b4b4b; }  /* Dunkles Grau/Schwarz */
+.btn-kalos { background-color: #3b82f6; }  /* Klares Blau */
+.btn-alola { background-color: #f472b6; }  /* Rosa/Sonne */
+.btn-galar { background-color: #0ea5e9; }  /* Himmelblau */
+
 @keyframes liveWobble {
     0% { transform: translateX(-50%) scale(1); }
     25% { transform: translateX(-50%) scale(1.05) rotate(3deg); }
@@ -318,6 +393,12 @@ header {
     .detail-card {
         height: 95vh;
         overflow-y: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    #regionFilters {
+        grid-template-columns: repeat(2, 1fr); /* 2 Spalten auf kleinen Displays */
     }
 }
 
