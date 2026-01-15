@@ -25,13 +25,14 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #f4f4f4;
 }
 
 #body {
     max-width: 1440px;
+    width: 100%;
     margin: 0 auto;
-    background-color: #f5f5f5;
+    background-color: #fef7e9c8;
+    box-shadow: 0 0 20px rgba(0,0,0,0.05);
 }
 
 #body.no-scroll { overflow: hidden; }
@@ -175,6 +176,60 @@ main {
     flex-direction: column;
     overflow: visible;
     z-index: 1001;
+}
+
+header {
+    background-color: #e3350d;
+    width: 100%;
+    padding: 20px 0;
+    display: flex;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    margin-bottom: 20px;
+}
+
+.header-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px; /* Abstand zwischen Logo und Suche */
+    width: 100%;
+    max-width: 1440px;
+}
+
+.main-logo {
+    height: 80px; /* Hier kannst du die Größe des Logos perfekt steuern */
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+}
+
+.search-area {
+    display: flex;
+    gap: 10px;
+}
+
+#searchInput {
+    padding: 10px 15px;
+    border-radius: 25px;
+    border: none;
+    outline: none;
+    width: 250px;
+}
+
+#searchBtn {
+    padding: 10px 20px;
+    border-radius: 25px;
+    border: none;
+    background-color: #313131;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+#searchBtn:hover {
+    background-color: #505050;
 }
 
 .detail-header {

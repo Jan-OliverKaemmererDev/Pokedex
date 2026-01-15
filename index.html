@@ -3,28 +3,35 @@
   <head>
     <meta charset="UTF-8" />
     <title>Pokédex</title>
-    <link rel="icon" type="image/x-icon" href="./assets/img/favicon.ico" />
+
+    <link rel="icon" type="image/png" href="./assets/img/favicon.png" />
     <link rel="stylesheet" href="style.css" />
+
+    <script src="script.js"></script>
   </head>
+
   <body id="body" onload="init()">
     <header>
-      <img src="./assets/img/logo.png" alt="Logo" />
-      <h1>Pokédex</h1>
-      <div class="search-area">
-        <input type="text" id="searchInput" placeholder="Search Pokemon..." />
-        <button onclick="searchPokemon()" id="searchBtn">Search</button>
+      <div class="header-content">
+        <img src="./assets/img/logo.png" alt="Pokédex Logo" class="main-logo" />
+        <div class="search-area">
+          <input type="text" id="searchInput" placeholder="Search Pokemon..." />
+          <button onclick="searchPokemon()" id="searchBtn">Search</button>
+        </div>
       </div>
     </header>
 
     <nav id="regionFilters"></nav>
+
     <main id="contentBox"></main>
+
     <div id="loadingSpinner" class="hidden">
       <img src="./assets/img/pokeball_bg.svg" class="rotate" alt="Loading..." />
       <p>...loading</p>
     </div>
 
     <button id="loadMoreBtn" onclick="loadAndShowPkm()">Load More</button>
-    <script src="script.js"></script>
+
     <div id="overlay" class="hidden" onclick="closeDetailView()"></div>
   </body>
 </html>
