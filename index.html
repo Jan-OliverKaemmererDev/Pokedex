@@ -18,10 +18,25 @@
           <input type="text" id="searchInput" placeholder="Search Pokemon..." />
           <button onclick="searchPokemon()" id="searchBtn">Search</button>
         </div>
+
+        <div class="burger-menu-container">
+          <div class="burger-icon" onclick="toggleMenu()">
+            <img src="./assets/img/map.png" alt="Map Icon" />
+            <span>Regions</span>
+          </div>
+        </div>
+
+        <div id="sideMenu" class="side-menu">
+          <div class="menu-header">
+            <h3>Select Region</h3>
+            <button class="close-btn" onclick="toggleMenu()">×</button>
+          </div>
+          <nav id="regionFilters"></nav>
+        </div>
       </div>
     </header>
 
-    <nav id="regionFilters"></nav>
+    <div id="menuOverlay" class="menu-overlay hidden" onclick="toggleMenu()"></div>
 
     <main id="contentBox"></main>
 
@@ -30,7 +45,20 @@
       <p>...loading</p>
     </div>
 
-    <button id="loadMoreBtn" class="loadMoreBtn" onclick="loadAndShowPkm()">Load More</button>
+    <button id="loadMoreBtn" class="loadMoreBtn" onclick="loadAndShowPkm()">
+      Load More
+    </button>
+
+    <footer class="main-footer">
+      <button onclick="scrollToTop()" class="back-to-top" title="Back to top">
+        <img src="./assets/img/arrow_up.png" alt="Up" />
+      </button>
+
+      <p>&copy; 2024 Pokédex - All rights reserved.</p>
+      <div class="footer-links">
+        <a href="imprint.html">Imprint</a>
+      </div>
+    </footer>
 
     <div id="overlay" class="hidden" onclick="closeDetailView()"></div>
   </body>

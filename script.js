@@ -282,6 +282,9 @@ async function loadRegion(startId, endId) {
     updateLoadMoreButtonVisibility();
     hideLoadingSpinner();
     isLoading = false;
+    document.getElementById('sideMenu').classList.remove('active');
+    document.getElementById('menuOverlay').classList.add('hidden');
+    document.body.style.overflow = 'auto';
 }
 
 function updateLoadMoreButtonVisibility() {
@@ -290,5 +293,26 @@ function updateLoadMoreButtonVisibility() {
         btn.style.display = 'none';
     } else {
         btn.style.display = 'block';
+    }
+}
+
+function scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+}
+
+function toggleMenu() {
+    const menu = document.getElementById('sideMenu');
+    const overlay = document.getElementById('menuOverlay');
+
+    menu.classList.toggle('active');
+    overlay.classList.toggle('hidden');
+
+    if (menu.classList.contains('active')) {
+        document.body.style.overflow = 'hidden';
+    } else {
+        document.body.style.overflow = 'auto';
     }
 }
