@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -14,19 +14,17 @@
     <header>
       <div class="header-content">
         <img src="./assets/img/logo.png" alt="Pokédex Logo" class="main-logo" />
+
+        <button class="map-drawer-btn" onclick="toggleMenu()" title="Open Regions">
+          <img src="./assets/img/map.png" alt="Map" />
+        </button>
+
         <div class="search-area">
           <input type="text" id="searchInput" placeholder="Search Pokemon..." />
           <button onclick="searchPokemon()" id="searchBtn">Search</button>
         </div>
 
-        <div class="burger-menu-container">
-          <div class="burger-icon" onclick="toggleMenu()">
-            <img src="./assets/img/map.png" alt="Map Icon" />
-            <span>Regions</span>
-          </div>
-        </div>
-
-        <div id="sideMenu" class="side-menu">
+        <div id="sideMenu" class="side-menu-drawer">
           <div class="menu-header">
             <h3>Select Region</h3>
             <button class="close-btn" onclick="toggleMenu()">×</button>
@@ -36,7 +34,11 @@
       </div>
     </header>
 
-    <div id="menuOverlay" class="menu-overlay hidden" onclick="toggleMenu()"></div>
+    <div
+      id="menuOverlay"
+      class="menu-overlay hidden"
+      onclick="toggleMenu()"
+    ></div>
 
     <main id="contentBox"></main>
 

@@ -264,17 +264,21 @@ header {
     justify-content: center;
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     margin-bottom: 20px;
+    position: relative;
+    z-index: 3000;
 }
 
 .header-content {
     position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
     width: 100%;
     max-width: 1440px;
-    padding: 20px 0;
+    display: flex;
+    flex-direction: row; /* Elemente nebeneinander */
+    align-items: center;
+    justify-content: space-between; /* Logo links, Suche rechts */
+    padding: 10px 40px; /* Seitlicher Abstand */
+    box-sizing: border-box;
+    min-height: 80px;
 }
 
 .main-logo {
@@ -284,64 +288,75 @@ header {
     filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.8));
 }
 
-.burger-menu-container {
+.map-drawer-btn {
     position: absolute;
-    right: 100px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 100;
-}
-
-.burger-icon {
+    bottom: -50px; /* Etwas tiefer, da das Icon jetzt größer ist */
+    left: 50%;
+    transform: translateX(-50%);
+    background: none; /* Weißen Hintergrund entfernen */
+    border: none;
+    width: 70px;  /* Größerer Klickbereich */
+    height: 70px;
+    cursor: pointer;
     display: flex;
     flex-direction: column;
     align-items: center;
-    cursor: pointer;
-    transition: transform 0.2s;
+    justify-content: center;
+    z-index: 3100; /* Höher als das Menü und das Overlay */
+    transition: transform 0.2s ease;
+    padding: 0;
 }
 
-.burger-icon:hover {
-    transform: scale(1.1);
+.map-drawer-btn:hover {
+    transform: translateX(-50%) scale(1.1);
 }
 
-.burger-icon img {
-    width: 40px;
-    height: 40px;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
+.map-drawer-btn img {
+    width: 45px;
+    height: 45px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+}
+.side-menu-drawer {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    z-index: 2500;
+    transform: translateY(-100%);
+    transition: transform 0.4s ease-in-out;
+    visibility: hidden;
+    padding: 20px;
+    box-sizing: border-box;
+    border-bottom: 3px solid #313131;
 }
 
-.burger-icon span {
-    color: white;
-    font-size: 12px;
-    font-weight: bold;
-    margin-top: 6px;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,1.0));
+.side-menu-drawer.active {
+    transform: translateY(0);
+    visibility: visible;
+    border-radius: 0 0 25px 25px;
+    background-color: rgb(255, 248, 237);
 }
 
-.side-menu {
+.menu-overlay {
     position: fixed;
     top: 0;
-    right: -320px;
-    width: 280px;
-    height: 100vh;
-    background-color: white;
-    box-shadow: -5px 0 15px rgba(0,0,0,0.2);
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
     z-index: 2000;
-    transition: right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-}
-
-.side-menu.active {
-    right: 0;
+    transition: opacity 0.3s ease;
 }
 
 .menu-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 2px solid #eee;
+    border-bottom: 2px solid #ececec;
     margin-bottom: 20px;
     padding-bottom: 10px;
 }
@@ -367,9 +382,13 @@ header {
 }
 
 #regionFilters {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 0;
 }
 
 .region-btn {
@@ -379,6 +398,7 @@ header {
     text-align: left;
     padding-left: 20px;
     font-size: 16px;
+    cursor: pointer;
 }
 
 .search-area {
@@ -494,6 +514,7 @@ header {
     left: 50%;
     transform: translateX(-50%);
     z-index: 5;
+    filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.326));
 }
 
 .detail-info-container {
@@ -615,6 +636,17 @@ header {
 @media (max-width: 768px) {
     #regionFilters {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    .header-content {
+        flex-direction: column;
+        gap: 15px;
+        padding-bottom: 40px;
+    }
+    
+    .search-area {
+        width: 100%;
+        justify-content: center;
     }
 }
 
