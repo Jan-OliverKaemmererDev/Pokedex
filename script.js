@@ -83,11 +83,11 @@ function closeDetailView() {
 }
 
 async function getDetailTemplate(pkm) {
-  let name = pkm.name.charAt(0).toUpperCase() + pkm.name.slice(1);
-  let typeClass = pkm.types[0].type.name;
-  let img = pkm.sprites.other["official-artwork"].front_default;
+    let name = pkm.name.charAt(0).toUpperCase() + pkm.name.slice(1);
+    let typeClass = pkm.types[0].type.name;
+    let img = pkm.sprites.other["official-artwork"].front_default;
 
-  return `
+    return `
         <div class="detail-card" onclick="event.stopPropagation()">
             <div class="detail-header ${typeClass}">
                 <div class="header-top">
@@ -104,9 +104,16 @@ async function getDetailTemplate(pkm) {
             </div>
             
             <div class="detail-info-container">
-                ${renderDetailTabs(pkm)}
+                <div class="tabs">
+                    <button class="active" onclick="showTab('about', ${pkm.id})">About</button>
+                    <button onclick="showTab('stats', ${pkm.id})">Base Stats</button>
+                    <button onclick="showTab('evolution', ${pkm.id})">Evolution</button>
+                    <button onclick="showTab('moves', ${pkm.id})">Moves</button>
+                </div>
+                <div id="tabContent" class="tab-content">
+                    ${renderAbout(pkm)}
+                </div>
             </div>
-            
             ${await renderNavArrows(pkm.id)}
         </div>
     `;
@@ -147,6 +154,40 @@ async function navigatePkm(newId) {
   hideLoadingSpinner();
 }
 
+function showTab(tabName, pkmId) {
+    const buttons = document.querySelectorAll('.tabs button');
+    buttons.forEach(btn => btn.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+
+    const pkm = allPokemon.find(p => p.id === pkmId);
+    const contentDiv = document.getElementById('tabContent');
+    
+    if (tabName === 'about') contentDiv.innerHTML = renderAbout(pkm);
+    if (tabName === 'stats') contentDiv.innerHTML = renderStats(pkm);
+    if (tabName === 'evolution') contentDiv.innerHTML = `<p>Evolution chain coming soon...</p>`; // API-Abfrage für Evolution ist komplexer
+    if (tabName === 'moves') contentDiv.innerHTML = renderMoves(pkm);
+}
+
+function renderAbout(pkm) {
+    const abilities = pkm.abilities.map(a => a.ability.name).join(', ');
+    return `
+        <table class="info-table">
+            <tr><td class="label-td">Species</td><td class="value-td">Seed</td></tr>
+            <tr><td class="label-td">Height</td><td class="value-td">${pkm.height / 10} m</td></tr>
+            <tr><td class="label-td">Weight</td><td class="value-td">${pkm.weight / 10} kg</td></tr>
+            <tr><td class="label-td">Abilities</td><td class="value-td">${abilities}</td></tr>
+        </table>
+        <h4 class="breeding-title">Breeding</h4>
+        <table class="info-table">
+            <tr><td class="label-td">Gender</td><td class="value-td">♂ 87.5% ♀ 12.5%</td></tr>
+            <tr><td class="label-td">Egg Groups</td><td class="value-td">Monster</td></tr>
+            <tr><td class="label-td">Egg Cycle</td><td class="value-td">Grass</td></tr>
+        </table>
+    `;
+}
+
+
+
 function renderDetailTabs(pkm) {
   return `
         <div class="tabs">
@@ -159,12 +200,35 @@ function renderDetailTabs(pkm) {
     `;
 }
 
-function renderStats(stats) {
-  let html = "";
-  for (let i = 0; i < stats.length; i++) {
-    html += `<div>${stats[i].stat.name}: ${stats[i].base_stat}</div>`;
-  }
-  return html;
+function renderStats(pkm) {
+    let html = "";
+    const statsMap = {
+        'hp': 'HP', 'attack': 'Attack', 'defense': 'Defense', 
+        'special-attack': 'Sp. Atk', 'special-defense': 'Sp. Def', 'speed': 'Speed'
+    };
+    
+    let total = 0;
+    pkm.stats.forEach(s => {
+        total += s.base_stat;
+        const barColor = s.base_stat >= 50 ? '#48d0b0' : '#fb7676';
+        html += `
+            <div class="stat-row">
+                <div class="stat-label">${statsMap[s.stat.name] || s.stat.name}</div>
+                <div class="stat-value">${s.base_stat}</div>
+                <div class="stat-bar-bg">
+                    <div class="stat-bar-fill" style="width: ${(s.base_stat/150)*100}%; background-color: ${barColor}"></div>
+                </div>
+            </div>
+        `;
+    });
+    
+    html += `<div class="stat-row"><div class="stat-label">Total</div><div class="stat-value">${total}</div></div>`;
+    return html;
+}
+
+function renderMoves(pkm) {
+    const movesHtml = pkm.moves.slice(0, 20).map(m => `<span class="move-tag">${m.move.name}</span>`).join('');
+    return `<div class="moves-container">${movesHtml}</div>`;
 }
 
 function getPkmCardTemplate(pkm) {

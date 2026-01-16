@@ -13,9 +13,17 @@
   <body id="body" onload="init()">
     <header>
       <div class="header-content">
-        <img src="./assets/img/logo.png" alt="Pokédex Logo" class="main-logo" />
+        <a href="index.html"
+          ><img
+            src="./assets/img/logo.png"
+            alt="Pokédex Logo"
+            class="main-logo"
+        /></a>
 
-        <button class="map-drawer-btn" onclick="toggleMenu()" title="Open Regions">
+        <button
+          class="map-drawer-btn"
+          onclick="toggleMenu()"
+          title="Open Regions">
           <img src="./assets/img/map.png" alt="Map" />
         </button>
 
@@ -52,14 +60,22 @@
     </button>
 
     <footer class="main-footer">
-      <button onclick="scrollToTop()" class="back-to-top" title="Back to top">
-        <img src="./assets/img/arrow_up.png" alt="Up" />
-      </button>
-
-      <p>&copy; 2024 Pokédex - All rights reserved.</p>
-      <div class="footer-links">
-        <a href="imprint.html">Imprint</a>
+      <div class="footer-left-side">
+        <a href="index.html"><img src="./assets/img/footer.png" alt="Home" class="footer-logo-img"/></a>
       </div>
+
+      <div class="footer-center-side">
+        <button onclick="scrollToTop()" class="back-to-top" title="Back to top">
+          <img src="./assets/img/arrow_up.png" alt="Up" />
+        </button>
+
+        <p>&copy; 2024 Pokédex - All rights reserved.</p>
+        <div class="footer-links">
+          <a href="imprint.html">Imprint</a>
+        </div>
+      </div>
+
+      <div class="footer-right-side"></div>
     </footer>
 
     <div id="overlay" class="hidden" onclick="closeDetailView()"></div>
