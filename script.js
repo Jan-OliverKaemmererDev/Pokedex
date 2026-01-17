@@ -2,6 +2,7 @@ let allPokemon = [];
 let pokemonIndex = [];
 let listStart = 1;
 const step = 25;
+let currentMinId = 1;
 let currentMaxId = 151;
 let isLoading = false;
 
@@ -145,21 +146,26 @@ async function renderNavArrows(currentId) {
   let prevId = currentId - 1;
   let nextId = currentId + 1;
 
-  let prevImg =
-    prevId >= 1
-      ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${prevId}.png`
-      : "";
-  let nextImg = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${nextId}.png`;
+  let showPrev = prevId >= currentMinId;
+  let showNext = nextId <= currentMaxId;
+
+  let prevImg = showPrev 
+    ? "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/" + prevId + ".png" 
+    : "";
+  let nextImg = showNext 
+    ? "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/" + nextId + ".png" 
+    : "";
 
   return `
         <div class="nav-arrows">
-            <button class="nav-btn-left" onclick="navigatePkm(${prevId})" ${
-    prevId < 1 ? 'style="visibility:hidden"' : ""
-  }>
+            <button class="nav-btn-left" onclick="navigatePkm(${prevId})" 
+                style="visibility: ${showPrev ? 'visible' : 'hidden'}">
                 <img src="./assets/img/arrow_left.png" class="arrow-icon">
                 <img src="${prevImg}" class="preview-img">
             </button>
-            <button class="nav-btn-right" onclick="navigatePkm(${nextId})">
+            
+            <button class="nav-btn-right" onclick="navigatePkm(${nextId})"
+                style="visibility: ${showNext ? 'visible' : 'hidden'}">
                 <img src="${nextImg}" class="preview-img">
                 <img src="./assets/img/arrow_right.png" class="arrow-icon">
             </button>
@@ -168,7 +174,9 @@ async function renderNavArrows(currentId) {
 }
 
 async function navigatePkm(newId) {
-  if (newId < 1) return;
+  if (newId < currentMinId || newId > currentMaxId) {
+    return; 
+  }
   showLoadingSpinner();
   let pkm = await fetchPokemonData(newId);
   let overlay = document.getElementById("overlay");
@@ -176,18 +184,79 @@ async function navigatePkm(newId) {
   hideLoadingSpinner();
 }
 
-function showTab(tabName, pkmId) {
+async function showTab(tabName, pkmId) {
     const buttons = document.querySelectorAll('.tabs button');
-    buttons.forEach(btn => btn.classList.remove('active'));
-    event.currentTarget.classList.add('active');
-
-    const pkm = allPokemon.find(p => p.id === pkmId);
+    for (let i = 0; i < buttons.length; i++) {
+        buttons[i].classList.remove('active');
+    }
+    if (event) {
+        event.currentTarget.classList.add('active');
+    }
+    let pkm;
+    for (let i = 0; i < allPokemon.length; i++) {
+        if (allPokemon[i].id === pkmId) {
+            pkm = allPokemon[i];
+            break;
+        }
+    }
+    
     const contentDiv = document.getElementById('tabContent');
     
     if (tabName === 'about') contentDiv.innerHTML = renderAbout(pkm);
     if (tabName === 'stats') contentDiv.innerHTML = renderStats(pkm);
-    if (tabName === 'evolution') contentDiv.innerHTML = `<p>Evolution chain coming soon...</p>`; // API-Abfrage für Evolution ist komplexer
     if (tabName === 'moves') contentDiv.innerHTML = renderMoves(pkm);
+    if (tabName === 'evolution') {
+        contentDiv.innerHTML = '<p>Loading evolution chain...</p>';
+        await loadAndRenderEvolution(pkmId);
+    }
+}
+
+async function loadAndRenderEvolution(pkmId) {
+    try {
+        let speciesRes = await fetch("https://pokeapi.co/api/v2/pokemon-species/" + pkmId);
+        let speciesData = await speciesRes.json();
+        let evoRes = await fetch(speciesData.evolution_chain.url);
+        let evoData = await evoRes.json();
+        let evoChain = [];
+        let currentPart = evoData.chain;
+
+        while (currentPart) {
+            let parts = currentPart.species.url.split("/");
+            let id = parts[parts.length - 2];
+            evoChain.push({
+                name: currentPart.species.name,
+                id: parseInt(id),
+                image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/" + id + ".png"
+            });
+            currentPart = currentPart.evolves_to[0];
+        }
+
+        renderEvolutionChain(evoChain);
+    } catch (e) {
+        document.getElementById('tabContent').innerHTML = "<p>No evolution data available.</p>";
+    }
+}
+
+function renderEvolutionChain(chain) {
+    let html = '<div class="evolution-container">';
+    for (let i = 0; i < chain.length; i++) {
+        let pkm = chain[i];
+        let name = pkm.name.charAt(0).toUpperCase() + pkm.name.slice(1);
+        
+        html += `
+            <div class="evo-step" onclick="navigatePkm(${pkm.id})">
+                <div class="evo-img-bg">
+                    <img src="${pkm.image}" alt="${name}">
+                </div>
+                <p>${name}</p>
+            </div>
+        `;
+        if (i < chain.length - 1) {
+            html += '<div class="evo-arrow">➜</div>';
+        }
+    }
+    html += '</div>';
+    document.getElementById('tabContent').innerHTML = html;
 }
 
 function renderAbout(pkm) {
@@ -382,6 +451,7 @@ function getRegionButtonTemplate(region) {
 async function loadRegion(startId, endId) {
   if (isLoading) return;
   isLoading = true;
+  currentMinId = startId;
   currentMaxId = endId;
   listStart = startId;
   allPokemon = [];

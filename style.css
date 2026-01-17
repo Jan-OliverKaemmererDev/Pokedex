@@ -648,7 +648,6 @@ header {
     color: #313131;
 }
 
-/* Stats Styling */
 .stat-row {
     display: flex;
     align-items: center;
@@ -697,6 +696,54 @@ header {
     border-radius: 15px;
     font-size: 12px;
     text-transform: capitalize;
+}
+
+.evolution-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 20px 0;
+    gap: 10px;
+}
+
+.evo-step {
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.evo-step:hover {
+    transform: scale(1.1);
+}
+
+.evo-img-bg {
+    background-color: #f0f0f0;
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+}
+
+.evo-step img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+}
+
+.evo-step p {
+    margin: 0;
+    font-weight: bold;
+    font-size: 14px;
+    color: #313131;
+}
+
+.evo-arrow {
+    font-size: 24px;
+    color: #ccc;
+    font-weight: bold;
 }
 
 .loadMoreBtn {
