@@ -1,0 +1,17 @@
+@font-face {
+    font-family: 'ArialCustom';
+    src: url('../fonts/Arial/ARIAL.TTF') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'ArialCustom';
+    src: url('../fonts/Arial/ARIALI.TTF') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+}
+
+body {
+    font-family: Arial, sans-serif;
+}
