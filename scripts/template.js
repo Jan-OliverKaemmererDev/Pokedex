@@ -190,6 +190,15 @@ function renderDetailTabs(pkm) {
     `;
 }
 
+function displaySearchResults(results) {
+  if (results.length === 0) {
+    renderNoResultsFound();
+  } else {
+    renderList(results);
+  }
+  hideLoadingSpinner();
+}
+
 function renderNoResultsFound() {
   let container = document.getElementById("contentBox");
   container.innerHTML = `
@@ -197,4 +206,15 @@ function renderNoResultsFound() {
             <p>No matching Pokémon found. Please try another name.</p>
         </div>
     `;
+}
+
+function createRegionButtons() {
+  let regions = [
+    { name: "Kanto", start: 1, end: 151 },
+    { name: "Johto", start: 152, end: 251 },
+  ];
+  let nav = document.getElementById("regionFilters");
+  for (let i = 0; i < regions.length; i++) {
+    nav.innerHTML += `<button onclick="loadRegion(${regions[i].start})">${regions[i].name}</button>`;
+  }
 }

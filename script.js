@@ -40,11 +40,22 @@ async function loadAndShowPkm() {
   let currentStep = Math.min(step, remaining);
   if (currentStep > 0) {
     let newBatch = await fetchPkmRange(listStart, currentStep);
-    let filteredBatch = newBatch.filter((p) => p.id <= currentMaxId);
-    allPokemon = allPokemon.concat(filteredBatch);
-    renderList(allPokemon);
-    listStart += currentStep;
+    handleNewBatch(newBatch);
   }
+  finishLoading();
+}
+
+function handleNewBatch(newBatch) {
+  for (let i = 0; i < newBatch.length; i++) {
+    if (newBatch[i].id <= currentMaxId) {
+      allPokemon.push(newBatch[i]);
+    }
+  }
+  renderList(allPokemon);
+  listStart += newBatch.length;
+}
+
+function finishLoading() {
   hideLoadingSpinner();
   updateLoadMoreButtonVisibility();
   isLoading = false;
@@ -84,12 +95,19 @@ function renderList(pkmArray) {
 }
 
 async function openDetailView(id) {
-  let pkm = allPokemon.find((p) => p.id === id);
+  let pkm = findPkmInArray(id);
   if (!pkm) pkm = await fetchPokemonData(id);
   let overlay = document.getElementById("overlay");
   overlay.innerHTML = await getDetailTemplate(pkm);
   overlay.classList.remove("hidden");
   document.getElementById("body").classList.add("no-scroll");
+}
+
+function findPkmInArray(id) {
+  for (let i = 0; i < allPokemon.length; i++) {
+    if (allPokemon[i].id === id) return allPokemon[i];
+  }
+  return null;
 }
 
 function closeDetailView() {
@@ -98,9 +116,7 @@ function closeDetailView() {
 }
 
 async function navigatePkm(newId) {
-  if (newId < currentMinId || newId > currentMaxId) {
-    return; 
-  }
+  if (newId < currentMinId || newId > currentMaxId) return;
   showLoadingSpinner();
   let pkm = await fetchPokemonData(newId);
   let overlay = document.getElementById("overlay");
@@ -109,67 +125,52 @@ async function navigatePkm(newId) {
 }
 
 async function showTab(tabName, pkmId) {
-    const buttons = document.querySelectorAll('.tabs button');
-    for (let i = 0; i < buttons.length; i++) {
-        buttons[i].classList.remove('active');
-    }
-    if (event) {
-        event.currentTarget.classList.add('active');
-    }
-    let pkm;
-    for (let i = 0; i < allPokemon.length; i++) {
-        if (allPokemon[i].id === pkmId) {
-            pkm = allPokemon[i];
-            break;
-        }
-    }
-    
-    const contentDiv = document.getElementById('tabContent');
-    
-    if (tabName === 'about') contentDiv.innerHTML = renderAbout(pkm);
-    if (tabName === 'stats') contentDiv.innerHTML = renderStats(pkm);
-    if (tabName === 'moves') contentDiv.innerHTML = renderMoves(pkm);
-    if (tabName === 'evolution') {
-        contentDiv.innerHTML = '<p>Loading evolution chain...</p>';
-        await loadAndRenderEvolution(pkmId);
-    }
+  updateTabButtons();
+  let pkm = findPkmInArray(pkmId);
+  const contentDiv = document.getElementById('tabContent');
+  if (tabName === 'about') contentDiv.innerHTML = renderAbout(pkm);
+  if (tabName === 'stats') contentDiv.innerHTML = renderStats(pkm);
+  if (tabName === 'moves') contentDiv.innerHTML = renderMoves(pkm);
+  if (tabName === 'evolution') {
+    contentDiv.innerHTML = '<p>Loading evolution chain...</p>';
+    await loadAndRenderEvolution(pkmId);
+  }
+}
+
+function updateTabButtons() {
+  const buttons = document.querySelectorAll('.tabs button');
+  for (let i = 0; i < buttons.length; i++) {
+    buttons[i].classList.remove('active');
+  }
+  if (event) event.currentTarget.classList.add('active');
 }
 
 async function loadAndRenderEvolution(pkmId) {
-    try {
-        let speciesRes = await fetch("https://pokeapi.co/api/v2/pokemon-species/" + pkmId);
-        let speciesData = await speciesRes.json();
-        let evoRes = await fetch(speciesData.evolution_chain.url);
-        let evoData = await evoRes.json();
-        let evoChain = [];
-        let currentPart = evoData.chain;
-
-        while (currentPart) {
-            let parts = currentPart.species.url.split("/");
-            let id = parts[parts.length - 2];
-            evoChain.push({
-                name: currentPart.species.name,
-                id: parseInt(id),
-                image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/" + id + ".png"
-            });
-            currentPart = currentPart.evolves_to[0];
-        }
-
-        renderEvolutionChain(evoChain);
-    } catch (e) {
-        document.getElementById('tabContent').innerHTML = "<p>No evolution data available.</p>";
-    }
+  try {
+    let speciesRes = await fetch("https://pokeapi.co/api/v2/pokemon-species/" + pkmId);
+    let speciesData = await speciesRes.json();
+    let evoRes = await fetch(speciesData.evolution_chain.url);
+    let evoData = await evoRes.json();
+    processEvolutionChain(evoData.chain);
+  } catch (e) {
+    document.getElementById('tabContent').innerHTML = "<p>No evolution data.</p>";
+  }
 }
 
-function createRegionButtons() {
-  let regions = [
-    { name: "Kanto", start: 1, end: 151 },
-    { name: "Johto", start: 152, end: 251 },
-  ];
-  let nav = document.getElementById("regionFilters");
-  for (let i = 0; i < regions.length; i++) {
-    nav.innerHTML += `<button onclick="loadRegion(${regions[i].start})">${regions[i].name}</button>`;
+function processEvolutionChain(chainData) {
+  let evoChain = [];
+  let currentPart = chainData;
+  while (currentPart) {
+    let parts = currentPart.species.url.split("/");
+    let id = parts[parts.length - 2];
+    evoChain.push({
+      name: currentPart.species.name,
+      id: parseInt(id),
+      image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/" + id + ".png"
+    });
+    currentPart = currentPart.evolves_to[0];
   }
+  renderEvolutionChain(evoChain);
 }
 
 function searchPokemon() {
@@ -185,42 +186,29 @@ function searchPokemon() {
 async function processSearch(query) {
   showLoadingSpinner();
   let matches = [];
-
   for (let i = 0; i < pokemonIndex.length; i++) {
-    let p = pokemonIndex[i];
     let id = i + 1;
-    if (p.name.includes(query) || id.toString() === query) {
-      matches.push(p);
+    if (pokemonIndex[i].name.includes(query) || id.toString() === query) {
+      matches.push(pokemonIndex[i]);
     }
   }
+  await fetchAndRenderMatches(matches);
+  hideLoadingSpinner();
+}
 
+async function fetchAndRenderMatches(matches) {
   if (matches.length > 0) {
     let searchResults = [];
     let limit = Math.min(matches.length, 25);
-    
     for (let i = 0; i < limit; i++) {
-      let m = matches[i];
-      let id = m.url.split("/").filter(Boolean).pop();
-      let data = await fetchPokemonData(id);
-      searchResults.push(data);
+      let id = matches[i].url.split("/").filter(Boolean).pop();
+      searchResults.push(await fetchPokemonData(id));
     }
-    
     renderList(searchResults);
     document.getElementById("loadMoreBtn").style.display = "none";
   } else {
     renderNoResultsFound();
   }
-  
-  hideLoadingSpinner();
-}
-
-function displaySearchResults(results) {
-  if (results.length === 0) {
-    renderNoResultsFound();
-  } else {
-    renderList(results);
-  }
-  hideLoadingSpinner();
 }
 
 function getRegions() {
@@ -253,15 +241,14 @@ async function loadRegion(startId, endId) {
   listStart = startId;
   allPokemon = [];
   showLoadingSpinner();
-  let remaining = endId - startId + 1;
-  let count = Math.min(step, remaining);
+  let count = Math.min(step, endId - startId + 1);
   let firstBatch = await fetchPkmRange(startId, count);
-  allPokemon = firstBatch.filter((p) => p.id <= currentMaxId);
-  listStart += count;
-  renderList(allPokemon);
-  updateLoadMoreButtonVisibility();
-  hideLoadingSpinner();
-  isLoading = false;
+  handleNewBatch(firstBatch);
+  finishLoading();
+  closeMenus();
+}
+
+function closeMenus() {
   document.getElementById("sideMenu").classList.remove("active");
   document.getElementById("menuOverlay").classList.add("hidden");
   document.body.style.overflow = "auto";
@@ -269,30 +256,17 @@ async function loadRegion(startId, endId) {
 
 function updateLoadMoreButtonVisibility() {
   let btn = document.getElementById("loadMoreBtn");
-  if (listStart > currentMaxId) {
-    btn.style.display = "none";
-  } else {
-    btn.style.display = "block";
-  }
+  btn.style.display = (listStart > currentMaxId) ? "none" : "block";
 }
 
 function scrollToTop() {
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth",
-  });
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 function toggleMenu() {
   const menu = document.getElementById("sideMenu");
   const overlay = document.getElementById("menuOverlay");
-
   menu.classList.toggle("active");
   overlay.classList.toggle("hidden");
-
-  if (menu.classList.contains("active")) {
-    document.body.style.overflow = "hidden";
-  } else {
-    document.body.style.overflow = "auto";
-  }
+  document.body.style.overflow = menu.classList.contains("active") ? "hidden" : "auto";
 }
