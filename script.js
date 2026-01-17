@@ -1,4 +1,5 @@
 let allPokemon = [];
+let pokemonIndex = [];
 let listStart = 1;
 const step = 25;
 let currentMaxId = 151;
@@ -6,7 +7,28 @@ let isLoading = false;
 
 async function init() {
   renderRegionButtons();
+  setupSearchListener();
+  await loadPokemonIndex();
   await loadRegion(1, 151);
+}
+
+function setupSearchListener() {
+  let input = document.getElementById("searchInput");
+  input.addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+      searchPokemon();
+    }
+  });
+}
+
+async function loadPokemonIndex() {
+  try {
+    let response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=898");
+    let data = await response.json();
+    pokemonIndex = data.results;
+  } catch (e) {
+    console.error("Fehler beim Laden des Pokémon-Index", e);
+  }
 }
 
 async function loadAndShowPkm() {
@@ -268,7 +290,7 @@ function createRegionButtons() {
 
 function searchPokemon() {
   let inputField = document.getElementById("searchInput");
-  let query = inputField.value.toLowerCase();
+  let query = inputField.value.toLowerCase().trim();
   if (query.length < 3) {
     alert("Please enter at least 3 letters to search.");
     return;
@@ -276,16 +298,36 @@ function searchPokemon() {
   processSearch(query);
 }
 
-function processSearch(query) {
+async function processSearch(query) {
   showLoadingSpinner();
-  let filteredResults = [];
-  for (let i = 0; i < allPokemon.length; i++) {
-    let pkm = allPokemon[i];
-    if (pkm.name.toLowerCase().includes(query)) {
-      filteredResults.push(pkm);
+  let matches = [];
+
+  for (let i = 0; i < pokemonIndex.length; i++) {
+    let p = pokemonIndex[i];
+    let id = i + 1;
+    if (p.name.includes(query) || id.toString() === query) {
+      matches.push(p);
     }
   }
-  displaySearchResults(filteredResults);
+
+  if (matches.length > 0) {
+    let searchResults = [];
+    let limit = Math.min(matches.length, 25);
+    
+    for (let i = 0; i < limit; i++) {
+      let m = matches[i];
+      let id = m.url.split("/").filter(Boolean).pop();
+      let data = await fetchPokemonData(id);
+      searchResults.push(data);
+    }
+    
+    renderList(searchResults);
+    document.getElementById("loadMoreBtn").style.display = "none";
+  } else {
+    renderNoResultsFound();
+  }
+  
+  hideLoadingSpinner();
 }
 
 function displaySearchResults(results) {
