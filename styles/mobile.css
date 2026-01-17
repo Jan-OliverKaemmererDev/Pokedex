@@ -1,0 +1,146 @@
+@media (max-width: 768px) and (min-width: 320px) {
+    
+    /* --- ALLGEMEIN --- */
+    body {
+        font-size: 16px; /* Bessere Lesbarkeit */
+    }
+
+    /* --- HEADER --- */
+    header {
+        padding: 15px 0;
+    }
+
+    .header-content {
+        flex-direction: column !important; /* Spalten-Layout */
+        gap: 20px;
+        padding: 10px 20px 50px 20px; /* Mehr Platz unten wegen des Map-Buttons */
+    }
+
+    .main-logo {
+        height: 60px; /* Etwas kleiner für Mobile */
+    }
+
+    .search-area {
+        width: 100%;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    #searchInput {
+        width: 60%; /* Dynamische Breite */
+        max-width: 250px;
+    }
+
+    .map-drawer-btn {
+        bottom: -35px; /* Positionierung korrigiert */
+    }
+
+    /* --- MAIN CONTENT (PKM CARDS) --- */
+    main {
+        grid-template-columns: repeat(2, 1fr) !important; /* Exakt 2 Karten nebeneinander */
+        gap: 12px;
+        padding: 15px;
+    }
+
+    .pkm-card {
+        height: 140px; /* Kompakter auf Mobile */
+        padding: 10px;
+    }
+
+    .card-info-left h3 {
+        font-size: 18px;
+        margin-bottom: 8px;
+    }
+
+    .type-badge {
+        width: 60px;
+        font-size: 10px;
+        padding: 3px 0;
+    }
+
+    .card-image-right {
+        width: 90px;
+        height: 90px;
+    }
+
+    .card-id {
+        font-size: 14px;
+        top: 5px;
+        right: 10px;
+    }
+
+    /* --- DETAIL-CARD (DAS OVERLAY) --- */
+    #overlay {
+        padding: 10px;
+        align-items: center; /* Mittig */
+    }
+
+    .detail-card {
+        width: 95%;
+        max-width: 360px;
+        min-height: auto; 
+        max-height: 90vh; /* Verhindert das Verschwinden vom Screen */
+        overflow-y: auto; /* Scrollbar falls der Inhalt zu lang ist */
+        border-radius: 25px;
+    }
+
+    .detail-header {
+        height: 180px; /* Kleinerer Header für Mobile */
+        padding: 20px;
+    }
+
+    .main-img {
+        width: 160px;
+        bottom: -30px;
+    }
+
+    .detail-info-container {
+        padding: 45px 20px 20px 20px;
+        margin-top: -40px;
+    }
+
+    .detail-title-row h2 {
+        font-size: 26px;
+    }
+
+    .tabs button {
+        font-size: 12px;
+        padding: 8px 2px;
+    }
+
+    .nav-arrows {
+        padding: 0 5px;
+    }
+
+    .nav-arrows button {
+        padding: 4px 8px;
+    }
+
+    .preview-img {
+        display: none; /* Verstecken für mehr Platz auf Mobile */
+    }
+
+    /* --- REGION DRAWER --- */
+    #regionFilters {
+        grid-template-columns: repeat(2, 1fr) !important; /* Auch hier 2 Spalten */
+    }
+
+    /* --- FOOTER --- */
+    .main-footer {
+        grid-template-columns: 1fr;
+        padding: 30px 0;
+    }
+
+    .footer-left-side {
+        justify-content: center;
+        padding: 0;
+        margin-bottom: 15px;
+    }
+}
+
+/* Fix für extrem schmale Geräte */
+@media (max-width: 360px) {
+    main {
+        grid-template-columns: 1fr !important; /* Nur 1 Karte bei sehr kleinen Handys */
+    }
+}
