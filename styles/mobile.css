@@ -1,23 +1,21 @@
 @media (max-width: 768px) and (min-width: 320px) {
     
-    /* --- ALLGEMEIN --- */
     body {
-        font-size: 16px; /* Bessere Lesbarkeit */
+        font-size: 16px;
     }
 
-    /* --- HEADER --- */
     header {
         padding: 15px 0;
     }
 
     .header-content {
-        flex-direction: column !important; /* Spalten-Layout */
+        flex-direction: column;
         gap: 20px;
-        padding: 10px 20px 50px 20px; /* Mehr Platz unten wegen des Map-Buttons */
+        padding: 10px 20px 50px 20px;
     }
 
     .main-logo {
-        height: 60px; /* Etwas kleiner für Mobile */
+        height: 60px;
     }
 
     .search-area {
@@ -27,23 +25,22 @@
     }
 
     #searchInput {
-        width: 60%; /* Dynamische Breite */
+        width: 60%;
         max-width: 250px;
     }
 
     .map-drawer-btn {
-        bottom: -35px; /* Positionierung korrigiert */
+        bottom: -35px;
     }
 
-    /* --- MAIN CONTENT (PKM CARDS) --- */
     main {
-        grid-template-columns: repeat(2, 1fr) !important; /* Exakt 2 Karten nebeneinander */
+        grid-template-columns: repeat(2, 1fr);
         gap: 12px;
         padding: 15px;
     }
 
     .pkm-card {
-        height: 140px; /* Kompakter auf Mobile */
+        height: 140px;
         padding: 10px;
     }
 
@@ -69,24 +66,28 @@
         right: 10px;
     }
 
-    /* --- DETAIL-CARD (DAS OVERLAY) --- */
     #overlay {
         padding: 10px;
-        align-items: center; /* Mittig */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 4000;
     }
 
     .detail-card {
-        width: 95%;
-        max-width: 360px;
-        min-height: auto; 
-        max-height: 90vh; /* Verhindert das Verschwinden vom Screen */
-        overflow-y: auto; /* Scrollbar falls der Inhalt zu lang ist */
-        border-radius: 25px;
+        z-index: 4001;
+        width: 96%;
+        max-width: 450px;
+        height: 90vh;
+        margin: 0 auto;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
     }
 
     .detail-header {
-        height: 180px; /* Kleinerer Header für Mobile */
-        padding: 20px;
+        height: 220px;
+        padding: 25px;
     }
 
     .main-img {
@@ -95,39 +96,51 @@
     }
 
     .detail-info-container {
-        padding: 45px 20px 20px 20px;
-        margin-top: -40px;
+        padding: 40px 15px 15px 15px;
+        margin-top: -30px;
+        overflow-y: auto;
+        border-radius: 35px 35px 25px 25px;
     }
 
     .detail-title-row h2 {
-        font-size: 26px;
+        font-size: 28px;
+        max-width: 70%;
+    }
+
+    .tabs {
+        margin-bottom: 15px;
+        gap: 5px;
     }
 
     .tabs button {
-        font-size: 12px;
-        padding: 8px 2px;
-    }
-
-    .nav-arrows {
-        padding: 0 5px;
-    }
-
-    .nav-arrows button {
-        padding: 4px 8px;
+        font-size: 14px;
+        padding: 8px 4px;
+        white-space: nowrap;
     }
 
     .preview-img {
-        display: none; /* Verstecken für mehr Platz auf Mobile */
+        display: block;
+        object-fit: contain;
     }
 
-    /* --- REGION DRAWER --- */
+    .nav-arrows {
+        position: absolute;
+        transform: translateY(-50%);
+        width: 100%;
+        left: 0;
+        right: 0;
+        padding: 0;
+        display: flex;
+        justify-content: space-between;
+        pointer-events: none;
+        z-index: 50;
+    }
+
     #regionFilters {
-        grid-template-columns: repeat(2, 1fr) !important; /* Auch hier 2 Spalten */
+        grid-template-columns: repeat(2, 1fr);
     }
 
-    /* --- FOOTER --- */
     .main-footer {
-        grid-template-columns: 1fr;
         padding: 30px 0;
     }
 
@@ -138,9 +151,8 @@
     }
 }
 
-/* Fix für extrem schmale Geräte */
 @media (max-width: 360px) {
     main {
-        grid-template-columns: 1fr !important; /* Nur 1 Karte bei sehr kleinen Handys */
+        grid-template-columns: 1fr;
     }
 }
