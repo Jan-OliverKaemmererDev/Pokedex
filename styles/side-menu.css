@@ -91,12 +91,21 @@
 
 .region-btn {
     width: 100%;
-    padding: 12px;
-    border-radius: 12px;
-    text-align: left;
-    padding-left: 20px;
-    font-size: 16px;
+    padding: 10px 15px;
+    border-radius: 25px;
+    border: none;
+    color: white;
+    font-weight: bold;
     cursor: pointer;
+    text-align: left;
+    transition: filter 0.2s, transform 0.1s;
+    font-size: 14px;
+    box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.6);
+}
+
+.region-btn:hover {
+    filter: brightness(0.9);
+    transform: scale(1.02);
 }
 
 .search-area {

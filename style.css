@@ -54,16 +54,6 @@ main {
     box-sizing: border-box;
 }
 
-#overlay {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
 header {
     background-color: #fb7676;
     width: 100%;
@@ -117,23 +107,6 @@ header {
 
 #searchBtn:hover {
     background-color: #505050;
-}
-
-.region-btn {
-    padding: 10px 15px;
-    border-radius: 25px;
-    border: none;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-    transition: filter 0.2s, transform 0.1s;
-    font-size: 14px;
-    box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.6);
-}
-
-.region-btn:hover {
-    filter: brightness(0.9);
-    transform: scale(1.02);
 }
 
 .loadMoreBtn {
