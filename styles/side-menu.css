@@ -1,0 +1,126 @@
+.map-drawer-btn {
+    position: absolute;
+    bottom: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: none;
+    border: none;
+    width: 70px;
+    height: 70px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 3100;
+    transition: transform 0.2s ease;
+    padding: 0;
+}
+
+.map-drawer-btn:hover {
+    transform: translateX(-50%) scale(1.1);
+}
+
+.map-drawer-btn img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+}
+.side-menu-drawer {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    z-index: 2500;
+    transform: translateY(-100%);
+    transition: transform 0.4s ease-in-out;
+    visibility: hidden;
+    padding: 20px;
+    box-sizing: border-box;
+    border-bottom: 3px solid #313131;
+}
+
+.side-menu-drawer.active {
+    transform: translateY(0);
+    visibility: visible;
+    border-radius: 0 0 25px 25px;
+    background-color: rgb(255, 248, 237);
+}
+
+.menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #ececec;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 30px;
+    cursor: pointer;
+    color: #313131;
+}
+
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(2px);
+    z-index: 1500;
+    transition: opacity 0.3s ease;
+}
+
+#regionFilters {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+.region-btn {
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    text-align: left;
+    padding-left: 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.search-area {
+    display: flex;
+    gap: 10px;
+}
+
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+    z-index: 2000;
+    transition: opacity 0.3s ease;
+}
+
+.btn-kanto { background-color: #ff5959; }
+.btn-johto { background-color: #ffbd48; }
+.btn-hoenn { background-color: #48d0b0; }
+.btn-sinnoh { background-color: #919191; }
+.btn-unova { background-color: #4b4b4b; }
+.btn-kalos { background-color: #3b82f6; }
+.btn-alola { background-color: #f472b6; }
+.btn-galar { background-color: #0ea5e9; }

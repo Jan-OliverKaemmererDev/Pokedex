@@ -1,0 +1,324 @@
+.back-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: transform 0.2s ease;
+}
+
+.back-btn:hover {
+    transform: scale(1.1);
+}
+
+.back-btn img {
+    width: 40px;
+    height: 40px;
+    filter: invert(1);
+}
+
+.detail-card {
+    background: white;
+    border-radius: 30px;
+    position: relative;
+    width: 90%;
+    max-width: 400px;
+    min-height: 880px; 
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
+    z-index: 1001;
+}
+
+.nav-arrows {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 10px;
+    pointer-events: none;
+    z-index: 20;
+}
+
+.nav-arrows button {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.3);
+    border: none;
+    border-radius: 40px;
+    padding: 5px 10px;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: all 0.2s;
+    gap: 5px;
+}
+
+.nav-arrows button:hover {
+    background: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+.nav-arrows img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+
+.preview-img {
+    width: 60px !important;
+    height: 60px !important;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
+    transition: transform 0.2s;
+}
+
+.nav-arrows button:hover .preview-img {
+    transform: scale(1.1);
+}
+
+.arrow-icon {
+    width: 20px; 
+    height: 20px;
+}
+
+.detail-header {
+    padding: 30px 25px 100px 25px;
+    border-radius: 30px 30px 0 0;
+    position: relative;
+    height: 250px;
+}
+
+.detail-header::before {
+    content: "";
+    position: absolute;
+    right: -1px;
+    width: 200px;
+    height: 200px;
+    background-image: url('../assets/img/pokeball_bg.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0.15;
+    z-index: 1;
+}
+
+.detail-header::after {
+    content: "";
+    position: absolute;
+    bottom: -20px;
+    left: -8px;
+    width: 180px;
+    height: 180px;
+    background-image: url('../assets/img/egg.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0.15;
+    z-index: 1;
+    transform: rotate(-20deg) scale(1.2); 
+    pointer-events: none;
+}
+
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+}
+
+.detail-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    margin-top: 10px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.detail-title-row h2 { margin: 0; font-size: 32px; }
+
+.main-img {
+    z-index: 5;
+    width: 200px;
+    position: absolute;
+    bottom: -40px;
+    margin-bottom: 34px;
+    left: 50%;
+    transform: translateX(-50%);
+    filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.326));
+}
+
+.detail-info-container {
+    background: white;
+    border-radius: 45px 45px 30px 30px;
+    margin-top: -50px; 
+    padding: 60px 25px 25px 25px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 2;
+    box-shadow: 1px 5px 16px rgba(0, 0, 0, 0.8);
+}
+
+.tab-content {
+    margin-top: 10px;
+}
+
+.tabs {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.tabs button {
+    background: none;
+    border: none;
+    padding: 12px 5px;
+    color: #999;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+    border-bottom: 2px solid transparent;
+}
+
+.tabs button.active {
+    color: #313131;
+    border-bottom: 2px solid #6c79db;
+}
+
+.info-table td {
+    padding: 8px 0;
+    vertical-align: top;
+}
+
+.label-td {
+    color: #999;
+    width: 100px;
+    font-weight: 500;
+}
+
+.value-td {
+    color: #313131;
+    font-weight: bold;
+}
+
+.breeding-title {
+    margin: 20px 0 10px 0;
+    font-size: 16px;
+    color: #313131;
+}
+
+.stat-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.stat-label {
+    width: 80px;
+    color: #999;
+    font-size: 13px;
+}
+
+.stat-value {
+    width: 35px;
+    font-weight: bold;
+    text-align: right;
+    margin-right: 15px;
+}
+
+.stat-bar-bg {
+    flex: 1;
+    height: 6px;
+    background-color: #eee;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.stat-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.5s ease-out;
+}
+
+.moves-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.move-tag {
+    background: #f1f1f1;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 12px;
+    text-transform: capitalize;
+}
+
+.evolution-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 20px 0;
+    gap: 10px;
+}
+
+.evo-step {
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.evo-step:hover {
+    transform: scale(1.1);
+}
+
+.evo-img-bg {
+    background-color: #f0f0f0;
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+}
+
+.evo-step img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+}
+
+.evo-step p {
+    margin: 0;
+    font-weight: bold;
+    font-size: 14px;
+    color: #313131;
+}
+
+.evo-arrow {
+    font-size: 24px;
+    color: #ccc;
+    font-weight: bold;
+}
+
+@keyframes liveWobble {
+    0% { transform: translateX(-50%) scale(1); }
+    25% { transform: translateX(-50%) scale(1.05) rotate(3deg); }
+    50% { transform: translateX(-50%) scale(1.05) rotate(-3deg); }
+    75% { transform: translateX(-50%) scale(1.05) rotate(2deg); }
+    100% { transform: translateX(-50%) scale(1); }
+}
+
+.animate-wobble {
+    animation: liveWobble 0.6s ease-in-out;
+}
