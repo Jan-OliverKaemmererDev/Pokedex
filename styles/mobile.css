@@ -78,7 +78,8 @@
         z-index: 4001;
         width: 96%;
         max-width: 450px;
-        height: 90vh;
+        min-height: auto !important;
+        height: 84vh !important;
         margin: 0 auto;
         overflow: hidden;
         display: flex;
