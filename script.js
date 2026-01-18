@@ -1,5 +1,7 @@
 let allPokemon = [];
 let pokemonIndex = [];
+let currentList = [];
+let isSearchActive = false;
 let listStart = 1;
 const step = 25;
 let currentMinId = 1;
@@ -47,8 +49,15 @@ async function loadAndShowPkm() {
 
 function handleNewBatch(newBatch) {
   for (let i = 0; i < newBatch.length; i++) {
-    if (newBatch[i].id <= currentMaxId) {
-      allPokemon.push(newBatch[i]);
+    let pkm = newBatch[i];
+    if (pkm.id <= currentMaxId) {
+      let exists = allPokemon.find(function(p) {
+        return p.id === pkm.id;
+      });
+
+      if (!exists) {
+        allPokemon.push(pkm);
+      }
     }
   }
   renderList(allPokemon);
@@ -95,6 +104,7 @@ function hideLoadingSpinner() {
 }
 
 function renderList(pkmArray) {
+  currentList = pkmArray;
   let container = document.getElementById("contentBox");
   container.innerHTML = "";
   for (let i = 0; i < pkmArray.length; i++) {
@@ -128,16 +138,29 @@ function closeDetailView() {
 }
 
 async function navigatePkm(newId) {
-  if (newId < currentMinId || newId > currentMaxId) return;
-  let pkm = findPkmInArray(newId);
+  if (newId === null || newId === undefined) return;
+
+  // Bereichsprüfung nur im Normalmodus
+  if (!isSearchActive) {
+    if (newId < currentMinId || newId > currentMaxId) return;
+  }
+
+  // 1. SCHRITT: Cache-Check
+  // Wir prüfen erst die globale Liste aller jemals geladenen Pkm, 
+  // dann die aktuell angezeigte Liste (wichtig für Suchergebnisse)
+  let pkm = allPokemon.find(p => p.id === newId) || currentList.find(p => p.id === newId);
+
+  // 2. SCHRITT: Nur laden, wenn NICHT im Cache
   if (!pkm) {
     showLoadingSpinner();
     pkm = await fetchPokemonData(newId);
     if (pkm) {
-      allPokemon.push(pkm);
+      allPokemon.push(pkm); // Permanent speichern
     }
     hideLoadingSpinner();
   }
+
+  // 3. SCHRITT: Anzeige
   if (pkm) {
     let overlay = document.getElementById("overlay");
     overlay.innerHTML = await getDetailTemplate(pkm);
@@ -210,6 +233,7 @@ function searchPokemon() {
 
 async function processSearch(query) {
   showLoadingSpinner();
+  isSearchActive = true;
   let matches = [];
   for (let i = 0; i < pokemonIndex.length; i++) {
     let id = i + 1;
@@ -260,6 +284,7 @@ function renderRegionButtons() {
 
 async function loadRegion(startId, endId) {
   if (isLoading) return;
+  isSearchActive = false;
   isLoading = true;
   currentMinId = startId;
   currentMaxId = endId;

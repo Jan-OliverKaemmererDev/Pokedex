@@ -60,22 +60,23 @@ async function getDetailTemplate(pkm) {
 }
 
 async function renderNavArrows(currentId) {
-  let prevId = currentId - 1;
-  let nextId = currentId + 1;
+  let prevId, nextId, showPrev, showNext;
 
-  let showPrev = prevId >= currentMinId;
-  let showNext = nextId <= currentMaxId;
+  if (isSearchActive) {
+    let currentIndex = currentList.findIndex(p => p.id === currentId);
+    showPrev = currentIndex > 0;
+    showNext = currentIndex < currentList.length - 1;
+    prevId = showPrev ? currentList[currentIndex - 1].id : null;
+    nextId = showNext ? currentList[currentIndex + 1].id : null;
+  } else {
+    prevId = currentId - 1;
+    nextId = currentId + 1;
+    showPrev = prevId >= currentMinId;
+    showNext = nextId <= currentMaxId;
+  }
 
-  let prevImg = showPrev
-    ? "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/" +
-      prevId +
-      ".png"
-    : "";
-  let nextImg = showNext
-    ? "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/" +
-      nextId +
-      ".png"
-    : "";
+  let prevImg = showPrev ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${prevId}.png` : "";
+  let nextImg = showNext ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${nextId}.png` : "";
 
   return `
         <div class="nav-arrows">
