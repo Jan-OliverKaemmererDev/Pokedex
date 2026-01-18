@@ -72,17 +72,16 @@ async function fetchPkmRange(start, count) {
 }
 
 async function fetchPokemonData(id) {
-  try {
-    const [pokemonRes, speciesRes] = await Promise.all([
-      fetch(`https://pokeapi.co/api/v2/pokemon/${id}`),
-      fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`)
-    ]);
-    const pokemonData = await pokemonRes.json();
-    const speciesData = await speciesRes.json();
-    return { ...pokemonData, species: speciesData };
-  } catch (e) {
-    console.error("Fehler beim Laden der Pokémon-Daten", e);
-  }
+    try {
+        let pokemonRes = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+        let speciesRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`);
+        let pokemonData = await pokemonRes.json();
+        let speciesData = await speciesRes.json();
+        pokemonData.species = speciesData;
+        return pokemonData;
+    } catch (e) {
+        console.error("Fehler beim Laden der Pokémon-Daten", e);
+    }
 }
 
 function showLoadingSpinner() {

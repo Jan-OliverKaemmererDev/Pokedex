@@ -129,14 +129,15 @@ function renderAbout(pkm) {
   const hasFullSpecies = pkm.species && pkm.species.genera;
   const genus = hasFullSpecies ? getGenus(pkm) : "Unknown";
   const eggGroups = hasFullSpecies ? getEggGroups(pkm) : "Unknown";
-  const habitat =
-    hasFullSpecies && pkm.species.habitat
-      ? pkm.species.habitat.name
-      : "Unknown";
+  let habitat = (hasFullSpecies && pkm.species.habitat) ? pkm.species.habitat.name : "Unknown";
 
   const heightInMeters = pkm.height / 10;
   const weightInKg = pkm.weight / 10;
-  const abilities = pkm.abilities.map((a) => a.ability.name).join(", ");
+
+  let abilityNames = pkm.abilities.map(function(a) {
+        return a.ability.name;
+    });
+    let abilities = abilityNames.join(', ');
 
   return `
     <table class="info-table">
@@ -156,14 +157,28 @@ function renderAbout(pkm) {
 }
 
 function getGenus(pkm) {
-  const genusEntry = pkm.species.genera.find((g) => g.language.name === "en");
-  return genusEntry ? genusEntry.genus : "Unknown";
+    if (!pkm.species || !pkm.species.genera) {
+        return "Unknown";
+    }
+    let genusEntry = pkm.species.genera.find(function(g) {
+        return g.language.name === "en";
+    });
+    if (genusEntry) {
+        return genusEntry.genus;
+    } else {
+        return "Unknown";
+    }
 }
 
 function getEggGroups(pkm) {
-  return pkm.species.egg_groups
-    .map((group) => group.name.charAt(0).toUpperCase() + group.name.slice(1))
-    .join(", ");
+    if (!pkm.species || !pkm.species.egg_groups) {
+        return "Unknown";
+    }
+    let groups = pkm.species.egg_groups.map(function(group) {
+        let name = group.name;
+        return name.charAt(0).toUpperCase() + name.slice(1);
+    });
+    return groups.join(', ');
 }
 
 function renderStats(pkm) {
