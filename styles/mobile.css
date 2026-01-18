@@ -75,36 +75,36 @@
     }
 
     .detail-card {
-        z-index: 4001;
-        width: 96%;
-        max-width: 450px;
+        z-index: 4001 !important;
+        width: 95% !important;
+        max-width: 400px !important;
+        height: 82vh !important; 
         min-height: auto !important;
-        height: 84vh !important;
-        margin: 0 auto;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
+        display: flex !important;
+        flex-direction: column !important;
+        overflow: hidden !important;
+        border-radius: 30px !important;
     }
 
     .detail-header {
-        height: 220px;
-        padding: 25px;
+        height: 180px;
+        padding: 20px 20px 80px 20px;
     }
 
     .main-img {
-        width: 160px;
-        bottom: -30px;
+        width: 150px;
+        bottom: -25px;
     }
 
     .detail-info-container {
-        padding: 40px 15px 15px 15px;
-        margin-top: -30px;
+        padding: 40px 20px 60px 20px;
+        margin-top: -40px;
+        flex: 1;
         overflow-y: auto;
-        border-radius: 35px 35px 25px 25px;
     }
 
     .detail-title-row h2 {
-        font-size: 28px;
+        font-size: 26px;
         max-width: 70%;
     }
 
@@ -114,27 +114,47 @@
     }
 
     .tabs button {
-        font-size: 14px;
+        font-size: 12px;
         padding: 8px 4px;
         white-space: nowrap;
     }
 
+    .info-table td, .stat-row {
+        padding: 4px 0;
+        font-size: 13px;
+    }
+
+    .stat-bar-bg {
+        height: 4px;
+    }
+
     .preview-img {
         display: block;
-        object-fit: contain;
+        width: 50px !important;
+        height: 50px !important;
     }
 
     .nav-arrows {
         position: absolute;
+        bottom: -16px;
         transform: translateY(-50%);
         width: 100%;
+        padding: 0;
         left: 0;
         right: 0;
-        padding: 0;
         display: flex;
         justify-content: space-between;
         pointer-events: none;
-        z-index: 50;
+        z-index: 100;
+    }
+
+    .nav-arrows button {
+        pointer-events: auto !important;
+        background: rgba(255, 255, 255, 0.9) !important;
+        border: 1px solid #eee !important;
+        border-radius: 12px !important;
+        padding: 2px 6px !important;
+        max-width: 45% !important;
     }
 
     #regionFilters {
