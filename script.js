@@ -94,6 +94,10 @@ function renderList(pkmArray) {
   }
 }
 
+function preventDefault(e) {
+    e.preventDefault();
+}
+
 async function openDetailView(id) {
   let pkm = findPkmInArray(id);
   if (!pkm) pkm = await fetchPokemonData(id);
@@ -101,6 +105,7 @@ async function openDetailView(id) {
   overlay.innerHTML = await getDetailTemplate(pkm);
   overlay.classList.remove("hidden");
   document.getElementById("body").classList.add("no-scroll");
+  window.addEventListener('touchmove', preventDefault, { passive: false });
 }
 
 function findPkmInArray(id) {
@@ -113,6 +118,7 @@ function findPkmInArray(id) {
 function closeDetailView() {
   document.getElementById("overlay").classList.add("hidden");
   document.getElementById("body").classList.remove("no-scroll");
+  window.removeEventListener('touchmove', preventDefault);
 }
 
 async function navigatePkm(newId) {

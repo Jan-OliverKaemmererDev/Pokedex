@@ -43,8 +43,8 @@ body {
 
 #body.no-scroll {
     overflow: hidden;
-    height: 100vh;
     position: fixed;
+    height: 100vh;
     width: 100%;
 }
 
