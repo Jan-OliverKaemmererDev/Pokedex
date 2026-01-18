@@ -72,8 +72,17 @@ async function fetchPkmRange(start, count) {
 }
 
 async function fetchPokemonData(id) {
-  let response = await fetch("https://pokeapi.co/api/v2/pokemon/" + id);
-  return await response.json();
+  try {
+    const [pokemonRes, speciesRes] = await Promise.all([
+      fetch(`https://pokeapi.co/api/v2/pokemon/${id}`),
+      fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`)
+    ]);
+    const pokemonData = await pokemonRes.json();
+    const speciesData = await speciesRes.json();
+    return { ...pokemonData, species: speciesData };
+  } catch (e) {
+    console.error("Fehler beim Laden der Pokémon-Daten", e);
+  }
 }
 
 function showLoadingSpinner() {
@@ -135,8 +144,10 @@ async function navigatePkm(newId) {
 async function showTab(tabName, pkmId) {
   updateTabButtons();
   let pkm = findPkmInArray(pkmId);
-  if (!pkm) {
-    pkm = await fetchPokemonData(pkmId);
+  if (!pkm || !pkm.species || !pkm.species.genera) {
+    const data = await fetchPokemonData(pkmId);
+    if (pkm) Object.assign(pkm, data); 
+    else pkm = data;
   }
   const contentDiv = document.getElementById('tabContent');
   if (tabName === 'about') contentDiv.innerHTML = renderAbout(pkm);

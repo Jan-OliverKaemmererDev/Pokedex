@@ -23,11 +23,11 @@ function getPkmCardTemplate(pkm) {
 }
 
 async function getDetailTemplate(pkm) {
-    let name = pkm.name.charAt(0).toUpperCase() + pkm.name.slice(1);
-    let typeClass = pkm.types[0].type.name;
-    let img = pkm.sprites.other["official-artwork"].front_default;
+  let name = pkm.name.charAt(0).toUpperCase() + pkm.name.slice(1);
+  let typeClass = pkm.types[0].type.name;
+  let img = pkm.sprites.other["official-artwork"].front_default;
 
-    return `
+  return `
         <div class="detail-card" onclick="event.stopPropagation()">
             <div class="detail-header ${typeClass}">
                 <div class="header-top">
@@ -66,23 +66,27 @@ async function renderNavArrows(currentId) {
   let showPrev = prevId >= currentMinId;
   let showNext = nextId <= currentMaxId;
 
-  let prevImg = showPrev 
-    ? "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/" + prevId + ".png" 
+  let prevImg = showPrev
+    ? "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/" +
+      prevId +
+      ".png"
     : "";
-  let nextImg = showNext 
-    ? "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/" + nextId + ".png" 
+  let nextImg = showNext
+    ? "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/" +
+      nextId +
+      ".png"
     : "";
 
   return `
         <div class="nav-arrows">
             <button class="nav-btn-left" onclick="navigatePkm(${prevId})" 
-                style="visibility: ${showPrev ? 'visible' : 'hidden'}">
+                style="visibility: ${showPrev ? "visible" : "hidden"}">
                 <img src="./assets/img/arrow_left.png" class="arrow-icon">
                 <img src="${prevImg}" class="preview-img">
             </button>
             
             <button class="nav-btn-right" onclick="navigatePkm(${nextId})"
-                style="visibility: ${showNext ? 'visible' : 'hidden'}">
+                style="visibility: ${showNext ? "visible" : "hidden"}">
                 <img src="${nextImg}" class="preview-img">
                 <img src="./assets/img/arrow_right.png" class="arrow-icon">
             </button>
@@ -91,12 +95,12 @@ async function renderNavArrows(currentId) {
 }
 
 function renderEvolutionChain(chain) {
-    let html = '<div class="evolution-container">';
-    for (let i = 0; i < chain.length; i++) {
-        let pkm = chain[i];
-        let name = pkm.name.charAt(0).toUpperCase() + pkm.name.slice(1);
-        
-        html += `
+  let html = '<div class="evolution-container">';
+  for (let i = 0; i < chain.length; i++) {
+    let pkm = chain[i];
+    let name = pkm.name.charAt(0).toUpperCase() + pkm.name.slice(1);
+
+    html += `
             <div class="evo-step" onclick="navigatePkm(${pkm.id})">
                 <div class="evo-img-bg">
                     <img src="${pkm.image}" alt="${name}">
@@ -104,12 +108,12 @@ function renderEvolutionChain(chain) {
                 <p>${name}</p>
             </div>
         `;
-        if (i < chain.length - 1) {
-            html += '<div class="evo-arrow">➜</div>';
-        }
+    if (i < chain.length - 1) {
+      html += '<div class="evo-arrow">➜</div>';
     }
-    html += '</div>';
-    document.getElementById('tabContent').innerHTML = html;
+  }
+  html += "</div>";
+  document.getElementById("tabContent").innerHTML = html;
 }
 
 function getRegionButtonTemplate(region) {
@@ -122,52 +126,82 @@ function getRegionButtonTemplate(region) {
 }
 
 function renderAbout(pkm) {
-    const abilities = pkm.abilities.map(a => a.ability.name).join(', ');
-    return `
-        <table class="info-table">
-            <tr><td class="label-td">Species</td><td class="value-td">Seed</td></tr>
-            <tr><td class="label-td">Height</td><td class="value-td">${pkm.height / 10} m</td></tr>
-            <tr><td class="label-td">Weight</td><td class="value-td">${pkm.weight / 10} kg</td></tr>
-            <tr><td class="label-td">Abilities</td><td class="value-td">${abilities}</td></tr>
-        </table>
-        <h4 class="breeding-title">Breeding</h4>
-        <table class="info-table">
-            <tr><td class="label-td">Gender</td><td class="value-td">♂ 87.5% ♀ 12.5%</td></tr>
-            <tr><td class="label-td">Egg Groups</td><td class="value-td">Monster</td></tr>
-            <tr><td class="label-td">Egg Cycle</td><td class="value-td">Grass</td></tr>
-        </table>
-    `;
+  const hasFullSpecies = pkm.species && pkm.species.genera;
+  const genus = hasFullSpecies ? getGenus(pkm) : "Unknown";
+  const eggGroups = hasFullSpecies ? getEggGroups(pkm) : "Unknown";
+  const habitat =
+    hasFullSpecies && pkm.species.habitat
+      ? pkm.species.habitat.name
+      : "Unknown";
+
+  const heightInMeters = pkm.height / 10;
+  const weightInKg = pkm.weight / 10;
+  const abilities = pkm.abilities.map((a) => a.ability.name).join(", ");
+
+  return `
+    <table class="info-table">
+        <tr><td class="label-td">Species</td><td class="value-td">${genus}</td></tr>
+        <tr><td class="label-td">Height</td><td class="value-td">${heightInMeters} m</td></tr>
+        <tr><td class="label-td">Weight</td><td class="value-td">${weightInKg} kg</td></tr>
+        <tr><td class="label-td">Abilities</td><td class="value-td">${abilities}</td></tr>
+    </table>
+    
+    <h4 class="breeding-title">Breeding</h4>
+    
+    <table class="info-table">
+        <tr><td class="label-td">Egg Groups</td><td class="value-td">${eggGroups}</td></tr>
+        <tr><td class="label-td">Habitat</td><td class="value-td" style="text-transform: capitalize;">${habitat}</td></tr>
+    </table>
+  `;
+}
+
+function getGenus(pkm) {
+  const genusEntry = pkm.species.genera.find((g) => g.language.name === "en");
+  return genusEntry ? genusEntry.genus : "Unknown";
+}
+
+function getEggGroups(pkm) {
+  return pkm.species.egg_groups
+    .map((group) => group.name.charAt(0).toUpperCase() + group.name.slice(1))
+    .join(", ");
 }
 
 function renderStats(pkm) {
-    let html = "";
-    const statsMap = {
-        'hp': 'HP', 'attack': 'Attack', 'defense': 'Defense', 
-        'special-attack': 'Sp. Atk', 'special-defense': 'Sp. Def', 'speed': 'Speed'
-    };
-    
-    let total = 0;
-    pkm.stats.forEach(s => {
-        total += s.base_stat;
-        const barColor = s.base_stat >= 50 ? '#48d0b0' : '#fb7676';
-        html += `
+  let html = "";
+  const statsMap = {
+    hp: "HP",
+    attack: "Attack",
+    defense: "Defense",
+    "special-attack": "Sp. Atk",
+    "special-defense": "Sp. Def",
+    speed: "Speed",
+  };
+
+  let total = 0;
+  pkm.stats.forEach((s) => {
+    total += s.base_stat;
+    const barColor = s.base_stat >= 50 ? "#48d0b0" : "#fb7676";
+    html += `
             <div class="stat-row">
                 <div class="stat-label">${statsMap[s.stat.name] || s.stat.name}</div>
                 <div class="stat-value">${s.base_stat}</div>
                 <div class="stat-bar-bg">
-                    <div class="stat-bar-fill" style="width: ${(s.base_stat/150)*100}%; background-color: ${barColor}"></div>
+                    <div class="stat-bar-fill" style="width: ${(s.base_stat / 150) * 100}%; background-color: ${barColor}"></div>
                 </div>
             </div>
         `;
-    });
-    
-    html += `<div class="stat-row"><div class="stat-label">Total</div><div class="stat-value">${total}</div></div>`;
-    return html;
+  });
+
+  html += `<div class="stat-row"><div class="stat-label">Total</div><div class="stat-value">${total}</div></div>`;
+  return html;
 }
 
 function renderMoves(pkm) {
-    const movesHtml = pkm.moves.slice(0, 20).map(m => `<span class="move-tag">${m.move.name}</span>`).join('');
-    return `<div class="moves-container">${movesHtml}</div>`;
+  const movesHtml = pkm.moves
+    .slice(0, 20)
+    .map((m) => `<span class="move-tag">${m.move.name}</span>`)
+    .join("");
+  return `<div class="moves-container">${movesHtml}</div>`;
 }
 
 function renderTypes(types) {
