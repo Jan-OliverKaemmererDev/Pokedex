@@ -129,15 +129,19 @@ function closeDetailView() {
 
 async function navigatePkm(newId) {
   if (newId < currentMinId || newId > currentMaxId) return;
-  showLoadingSpinner();
-  let pkm = await fetchPokemonData(newId);
+  let pkm = findPkmInArray(newId);
   if (!pkm) {
+    showLoadingSpinner();
     pkm = await fetchPokemonData(newId);
-    allPokemon.push(pkm);
+    if (pkm) {
+      allPokemon.push(pkm);
+    }
+    hideLoadingSpinner();
   }
-  let overlay = document.getElementById("overlay");
-  overlay.innerHTML = await getDetailTemplate(pkm);
-  hideLoadingSpinner();
+  if (pkm) {
+    let overlay = document.getElementById("overlay");
+    overlay.innerHTML = await getDetailTemplate(pkm);
+  }
 }
 
 async function showTab(tabName, pkmId) {
