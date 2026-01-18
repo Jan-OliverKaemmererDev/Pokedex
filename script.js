@@ -123,6 +123,10 @@ async function navigatePkm(newId) {
   if (newId < currentMinId || newId > currentMaxId) return;
   showLoadingSpinner();
   let pkm = await fetchPokemonData(newId);
+  if (!pkm) {
+    pkm = await fetchPokemonData(newId);
+    allPokemon.push(pkm);
+  }
   let overlay = document.getElementById("overlay");
   overlay.innerHTML = await getDetailTemplate(pkm);
   hideLoadingSpinner();
@@ -131,6 +135,9 @@ async function navigatePkm(newId) {
 async function showTab(tabName, pkmId) {
   updateTabButtons();
   let pkm = findPkmInArray(pkmId);
+  if (!pkm) {
+    pkm = await fetchPokemonData(pkmId);
+  }
   const contentDiv = document.getElementById('tabContent');
   if (tabName === 'about') contentDiv.innerHTML = renderAbout(pkm);
   if (tabName === 'stats') contentDiv.innerHTML = renderStats(pkm);
