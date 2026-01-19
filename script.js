@@ -164,6 +164,9 @@ async function navigatePkm(newId) {
     hideLoadingSpinner();
   }
   if (pkm) {
+    if (!pkm.species || !pkm.species.genera) {
+      pkm.species = await fetchSpeciesData(pkm.id);
+    }
     let overlay = document.getElementById("overlay");
     overlay.innerHTML = await getDetailTemplate(pkm);
   }
