@@ -206,8 +206,27 @@ function getEggGroups(pkm) {
 }
 
 function renderEvolutionChain(evoChain) {
-    let html = '<div class="evolution-container">';
-    for (let i = 0; i < evoChain.length; i++) {
+    if (evoChain.length < 2) {
+        document.getElementById("tabContent").innerHTML = '<p>No evolution data.</p>';
+        return;
+    }
+    let html = '<div class="evolution-container pyramid-layout">';
+
+    html += `
+        <div class="evo-row top-row">
+            <div class="evo-step" onclick="openDetailView(${evoChain[0].id})">
+                <div class="evo-img-bg">
+                    <img src="${evoChain[0].image}" alt="${evoChain[0].name}">
+                </div>
+                <p>${evoChain[0].name.charAt(0).toUpperCase() + evoChain[0].name.slice(1)}</p>
+            </div>
+        </div>
+    `;
+
+    html += '<div class="evo-arrow down-arrow">↓</div>';
+
+    html += '<div class="evo-row bottom-row">';
+    for (let i = 1; i < evoChain.length; i++) {
         html += `
             <div class="evo-step" onclick="openDetailView(${evoChain[i].id})">
                 <div class="evo-img-bg">
@@ -216,11 +235,13 @@ function renderEvolutionChain(evoChain) {
                 <p>${evoChain[i].name.charAt(0).toUpperCase() + evoChain[i].name.slice(1)}</p>
             </div>
         `;
+
         if (i < evoChain.length - 1) {
             html += '<span class="evo-arrow">➔</span>';
         }
     }
-    html += '</div>';
+    html += '</div></div>';
+    
     document.getElementById("tabContent").innerHTML = html;
 }
 
