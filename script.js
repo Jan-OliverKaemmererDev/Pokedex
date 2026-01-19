@@ -48,20 +48,21 @@ async function loadAndShowPkm() {
 }
 
 function handleNewBatch(newBatch) {
+  addBatchToAllPokemon(newBatch);
+  renderList(allPokemon);
+  listStart += newBatch.length;
+}
+
+function addBatchToAllPokemon(newBatch) {
   for (let i = 0; i < newBatch.length; i++) {
     let pkm = newBatch[i];
     if (pkm.id <= currentMaxId) {
-      let exists = allPokemon.find(function (p) {
-        return p.id === pkm.id;
-      });
-
+      let exists = findPkmInArray(pkm.id);
       if (!exists) {
         allPokemon.push(pkm);
       }
     }
   }
-  renderList(allPokemon);
-  listStart += newBatch.length;
 }
 
 function finishLoading() {
@@ -139,20 +140,21 @@ function closeDetailView() {
   document.getElementById("body").classList.remove("no-scroll");
 }
 
-async function navigatePkm(newId) {
-  if (newId === null || newId === undefined) return;
+function isNavigationValid(newId) {
+  if (newId === null || newId === undefined) return false;
   if (!isSearchActive) {
-    if (newId < currentMinId || newId > currentMaxId) return;
+    if (newId < currentMinId || newId > currentMaxId) return false;
   }
-  let pkm =
-    allPokemon.find((p) => p.id === newId) ||
-    currentList.find((p) => p.id === newId);
+  return true;
+}
+
+async function navigatePkm(newId) {
+  if (!isNavigationValid(newId)) return;
+  let pkm = findPkmInArray(newId);
   if (!pkm) {
     showLoadingSpinner();
     pkm = await fetchPokemonData(newId);
-    if (pkm) {
-      allPokemon.push(pkm);
-    }
+    if (pkm) allPokemon.push(pkm);
     hideLoadingSpinner();
   }
   if (pkm) {
@@ -202,20 +204,24 @@ async function loadAndRenderEvolution(pkmId) {
   }
 }
 
+function createEvoObject(currentPart) {
+  let parts = currentPart.species.url.split("/");
+  let id = parts[parts.length - 2];
+  return {
+    name: currentPart.species.name,
+    id: parseInt(id),
+    image:
+      "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/" +
+      id +
+      ".png",
+  };
+}
+
 function processEvolutionChain(chainData) {
   let evoChain = [];
   let currentPart = chainData;
   while (currentPart) {
-    let parts = currentPart.species.url.split("/");
-    let id = parts[parts.length - 2];
-    evoChain.push({
-      name: currentPart.species.name,
-      id: parseInt(id),
-      image:
-        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/" +
-        id +
-        ".png",
-    });
+    evoChain.push(createEvoObject(currentPart));
     currentPart = currentPart.evolves_to[0];
   }
   renderEvolutionChain(evoChain);
@@ -235,13 +241,18 @@ function searchPokemon() {
 async function processSearch(query) {
   showLoadingSpinner();
   isSearchActive = true;
+  let matches = await performSearchLoop(query);
+  currentList = matches;
+  displaySearchResults(matches);
+  hideLoadingSpinner();
+}
+
+async function performSearchLoop(query) {
   let matches = [];
   for (let i = 0; i < pokemonIndex.length; i++) {
     let id = i + 1;
     if (pokemonIndex[i].name.includes(query) || id.toString() === query) {
-      let cachedPkm = allPokemon.find(function (p) {
-        return p.id === id;
-      });
+      let cachedPkm = findPkmInArray(id);
       if (cachedPkm) {
         matches.push(cachedPkm);
       } else {
@@ -253,9 +264,7 @@ async function processSearch(query) {
       }
     }
   }
-  currentList = matches;
-  displaySearchResults(matches);
-  hideLoadingSpinner();
+  return matches;
 }
 
 async function fetchAndRenderMatches(matches) {
