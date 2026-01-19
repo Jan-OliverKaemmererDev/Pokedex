@@ -229,6 +229,7 @@ function searchPokemon() {
     return;
   }
   processSearch(query);
+  inputField.value = "";
 }
 
 async function processSearch(query) {
