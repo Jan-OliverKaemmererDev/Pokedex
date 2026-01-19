@@ -163,6 +163,67 @@
     }
 }
 
+@media (max-width: 380px) {
+    #overlay {
+        padding: 0;
+    }
+
+    .detail-card {
+        width: 100% !important;
+        height: 100vh !important;
+        max-width: none !important;
+        border-radius: 0 !important;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .detail-header {
+        height: 160px;
+        padding: 15px 15px 60px 15px;
+        border-radius: 0;
+    }
+
+    .main-img {
+        width: 130px;
+        bottom: -20px;
+    }
+
+    .detail-info-container {
+        margin-top: -30px;
+        padding: 40px 15px 20px 15px;
+        border-radius: 35px 35px 0 0;
+        flex: 1;
+        overflow-y: auto;
+    }
+
+    .detail-title-row h2 {
+        font-size: 24px;
+    }
+
+    .tabs button {
+        font-size: 14px;
+        padding: 8px 2px;
+    }
+
+    .nav-arrows {
+        position: absolute;
+        bottom: 4px;
+        left: 0;
+        right: 0;
+        width: auto;
+        display: flex;
+        justify-content: space-between;
+        padding: 0 10px !important;
+        pointer-events: none;
+        z-index: 100;
+    }
+
+    .nav-arrows button {
+        pointer-events: auto;
+        padding: 4px 8px;
+    }
+}
+
 @media (max-width: 360px) {
     main {
         grid-template-columns: 1fr;

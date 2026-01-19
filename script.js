@@ -141,30 +141,20 @@ function closeDetailView() {
 
 async function navigatePkm(newId) {
   if (newId === null || newId === undefined) return;
-
-  // Bereichsprüfung nur im Normalmodus
   if (!isSearchActive) {
     if (newId < currentMinId || newId > currentMaxId) return;
   }
-
-  // 1. SCHRITT: Cache-Check
-  // Wir prüfen erst die globale Liste aller jemals geladenen Pkm,
-  // dann die aktuell angezeigte Liste (wichtig für Suchergebnisse)
   let pkm =
     allPokemon.find((p) => p.id === newId) ||
     currentList.find((p) => p.id === newId);
-
-  // 2. SCHRITT: Nur laden, wenn NICHT im Cache
   if (!pkm) {
     showLoadingSpinner();
     pkm = await fetchPokemonData(newId);
     if (pkm) {
-      allPokemon.push(pkm); // Permanent speichern
+      allPokemon.push(pkm);
     }
     hideLoadingSpinner();
   }
-
-  // 3. SCHRITT: Anzeige
   if (pkm) {
     let overlay = document.getElementById("overlay");
     overlay.innerHTML = await getDetailTemplate(pkm);
