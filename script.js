@@ -84,15 +84,9 @@ async function fetchPkmRange(start, count) {
 async function fetchPokemonData(id) {
   try {
     let pokemonRes = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
-    let speciesRes = await fetch(
-      `https://pokeapi.co/api/v2/pokemon-species/${id}`,
-    );
-    let pokemonData = await pokemonRes.json();
-    let speciesData = await speciesRes.json();
-    pokemonData.species = speciesData;
-    return pokemonData;
+    return await pokemonRes.json();
   } catch (e) {
-    console.error("Fehler beim Laden der Pokémon-Daten", e);
+    console.error("Fehler beim Laden der Basis-Daten", e);
   }
 }
 
@@ -119,9 +113,21 @@ function preventDefault(e) {
   e.preventDefault();
 }
 
+async function fetchSpeciesData(id) {
+  try {
+    let speciesRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`);
+    return await speciesRes.json();
+  } catch (e) {
+    console.error("Fehler beim Laden der Spezies-Daten", e);
+  }
+}
+
 async function openDetailView(id) {
   let pkm = findPkmInArray(id);
   if (!pkm) pkm = await fetchPokemonData(id);
+  if (!pkm.species || !pkm.species.genera) {
+    pkm.species = await fetchSpeciesData(id);
+  }
   let overlay = document.getElementById("overlay");
   overlay.innerHTML = await getDetailTemplate(pkm);
   overlay.classList.remove("hidden");
