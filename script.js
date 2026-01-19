@@ -17,7 +17,7 @@ async function init() {
 
 function setupSearchListener() {
   let input = document.getElementById("searchInput");
-  input.addEventListener("keydown", function(event) {
+  input.addEventListener("keydown", function (event) {
     if (event.key === "Enter") {
       searchPokemon();
     }
@@ -51,7 +51,7 @@ function handleNewBatch(newBatch) {
   for (let i = 0; i < newBatch.length; i++) {
     let pkm = newBatch[i];
     if (pkm.id <= currentMaxId) {
-      let exists = allPokemon.find(function(p) {
+      let exists = allPokemon.find(function (p) {
         return p.id === pkm.id;
       });
 
@@ -81,16 +81,18 @@ async function fetchPkmRange(start, count) {
 }
 
 async function fetchPokemonData(id) {
-    try {
-        let pokemonRes = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
-        let speciesRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`);
-        let pokemonData = await pokemonRes.json();
-        let speciesData = await speciesRes.json();
-        pokemonData.species = speciesData;
-        return pokemonData;
-    } catch (e) {
-        console.error("Fehler beim Laden der Pokémon-Daten", e);
-    }
+  try {
+    let pokemonRes = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+    let speciesRes = await fetch(
+      `https://pokeapi.co/api/v2/pokemon-species/${id}`,
+    );
+    let pokemonData = await pokemonRes.json();
+    let speciesData = await speciesRes.json();
+    pokemonData.species = speciesData;
+    return pokemonData;
+  } catch (e) {
+    console.error("Fehler beim Laden der Pokémon-Daten", e);
+  }
 }
 
 function showLoadingSpinner() {
@@ -113,7 +115,7 @@ function renderList(pkmArray) {
 }
 
 function preventDefault(e) {
-    e.preventDefault();
+  e.preventDefault();
 }
 
 async function openDetailView(id) {
@@ -146,9 +148,11 @@ async function navigatePkm(newId) {
   }
 
   // 1. SCHRITT: Cache-Check
-  // Wir prüfen erst die globale Liste aller jemals geladenen Pkm, 
+  // Wir prüfen erst die globale Liste aller jemals geladenen Pkm,
   // dann die aktuell angezeigte Liste (wichtig für Suchergebnisse)
-  let pkm = allPokemon.find(p => p.id === newId) || currentList.find(p => p.id === newId);
+  let pkm =
+    allPokemon.find((p) => p.id === newId) ||
+    currentList.find((p) => p.id === newId);
 
   // 2. SCHRITT: Nur laden, wenn NICHT im Cache
   if (!pkm) {
@@ -172,36 +176,39 @@ async function showTab(tabName, pkmId) {
   let pkm = findPkmInArray(pkmId);
   if (!pkm || !pkm.species || !pkm.species.genera) {
     const data = await fetchPokemonData(pkmId);
-    if (pkm) Object.assign(pkm, data); 
+    if (pkm) Object.assign(pkm, data);
     else pkm = data;
   }
-  const contentDiv = document.getElementById('tabContent');
-  if (tabName === 'about') contentDiv.innerHTML = renderAbout(pkm);
-  if (tabName === 'stats') contentDiv.innerHTML = renderStats(pkm);
-  if (tabName === 'moves') contentDiv.innerHTML = renderMoves(pkm);
-  if (tabName === 'evolution') {
-    contentDiv.innerHTML = '<p>Loading evolution chain...</p>';
+  const contentDiv = document.getElementById("tabContent");
+  if (tabName === "about") contentDiv.innerHTML = renderAbout(pkm);
+  if (tabName === "stats") contentDiv.innerHTML = renderStats(pkm);
+  if (tabName === "moves") contentDiv.innerHTML = renderMoves(pkm);
+  if (tabName === "evolution") {
+    contentDiv.innerHTML = "<p>Loading evolution chain...</p>";
     await loadAndRenderEvolution(pkmId);
   }
 }
 
 function updateTabButtons() {
-  const buttons = document.querySelectorAll('.tabs button');
+  const buttons = document.querySelectorAll(".tabs button");
   for (let i = 0; i < buttons.length; i++) {
-    buttons[i].classList.remove('active');
+    buttons[i].classList.remove("active");
   }
-  if (event) event.currentTarget.classList.add('active');
+  if (event) event.currentTarget.classList.add("active");
 }
 
 async function loadAndRenderEvolution(pkmId) {
   try {
-    let speciesRes = await fetch("https://pokeapi.co/api/v2/pokemon-species/" + pkmId);
+    let speciesRes = await fetch(
+      "https://pokeapi.co/api/v2/pokemon-species/" + pkmId,
+    );
     let speciesData = await speciesRes.json();
     let evoRes = await fetch(speciesData.evolution_chain.url);
     let evoData = await evoRes.json();
     processEvolutionChain(evoData.chain);
   } catch (e) {
-    document.getElementById('tabContent').innerHTML = "<p>No evolution data.</p>";
+    document.getElementById("tabContent").innerHTML =
+      "<p>No evolution data.</p>";
   }
 }
 
@@ -214,7 +221,10 @@ function processEvolutionChain(chainData) {
     evoChain.push({
       name: currentPart.species.name,
       id: parseInt(id),
-      image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/" + id + ".png"
+      image:
+        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/" +
+        id +
+        ".png",
     });
     currentPart = currentPart.evolves_to[0];
   }
@@ -238,10 +248,22 @@ async function processSearch(query) {
   for (let i = 0; i < pokemonIndex.length; i++) {
     let id = i + 1;
     if (pokemonIndex[i].name.includes(query) || id.toString() === query) {
-      matches.push(pokemonIndex[i]);
+      let cachedPkm = allPokemon.find(function (p) {
+        return p.id === id;
+      });
+      if (cachedPkm) {
+        matches.push(cachedPkm);
+      } else {
+        let freshPkm = await fetchPokemonData(id);
+        if (freshPkm) {
+          allPokemon.push(freshPkm);
+          matches.push(freshPkm);
+        }
+      }
     }
   }
-  await fetchAndRenderMatches(matches);
+  currentList = matches;
+  displaySearchResults(matches);
   hideLoadingSpinner();
 }
 
@@ -306,7 +328,7 @@ function closeMenus() {
 
 function updateLoadMoreButtonVisibility() {
   let btn = document.getElementById("loadMoreBtn");
-  btn.style.display = (listStart > currentMaxId) ? "none" : "block";
+  btn.style.display = listStart > currentMaxId ? "none" : "block";
 }
 
 function scrollToTop() {
@@ -318,5 +340,7 @@ function toggleMenu() {
   const overlay = document.getElementById("menuOverlay");
   menu.classList.toggle("active");
   overlay.classList.toggle("hidden");
-  document.body.style.overflow = menu.classList.contains("active") ? "hidden" : "auto";
+  document.body.style.overflow = menu.classList.contains("active")
+    ? "hidden"
+    : "auto";
 }

@@ -60,24 +60,37 @@ async function getDetailTemplate(pkm) {
 }
 
 async function renderNavArrows(currentId) {
-  let prevId, nextId, showPrev, showNext;
-
+  let prevId, nextId, showPrev, showNext, prevPkm, nextPkm;
   if (isSearchActive) {
-    let currentIndex = currentList.findIndex(p => p.id === currentId);
+    let currentIndex = currentList.findIndex(function(p) {
+      return p.id === currentId;
+    });
     showPrev = currentIndex > 0;
     showNext = currentIndex < currentList.length - 1;
-    prevId = showPrev ? currentList[currentIndex - 1].id : null;
-    nextId = showNext ? currentList[currentIndex + 1].id : null;
+    if (showPrev) {
+      prevPkm = currentList[currentIndex - 1];
+      prevId = prevPkm.id;
+    }
+    if (showNext) {
+      nextPkm = currentList[currentIndex + 1];
+      nextId = nextPkm.id;
+    }
   } else {
     prevId = currentId - 1;
     nextId = currentId + 1;
     showPrev = prevId >= currentMinId;
     showNext = nextId <= currentMaxId;
+    prevPkm = allPokemon.find(function(p) { return p.id === prevId; });
+    nextPkm = allPokemon.find(function(p) { return p.id === nextId; });
   }
-
-  let prevImg = showPrev ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${prevId}.png` : "";
-  let nextImg = showNext ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${nextId}.png` : "";
-
+  let prevImg = "";
+  if (showPrev) {
+    prevImg = (prevPkm && prevPkm.sprites) ? prevPkm.sprites.front_default : `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${prevId}.png`;
+  }
+  let nextImg = "";
+  if (showNext) {
+    nextImg = (nextPkm && nextPkm.sprites) ? nextPkm.sprites.front_default : `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${nextId}.png`;
+  }
   return `
         <div class="nav-arrows">
             <button class="nav-btn-left" onclick="navigatePkm(${prevId})" 
