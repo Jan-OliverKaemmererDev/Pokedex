@@ -20,12 +20,28 @@
   .search-area {
     width: 100%;
     justify-content: center;
-    gap: 8px;
+    gap: 6px;
+    flex-direction: row !important;
   }
 
   #searchInput {
-    width: 60%;
-    max-width: 250px;
+    width: 40%; 
+    min-width: 120px;
+    max-width: 200px;
+  }
+
+  .back-to-main-btn {
+    width: 38px;
+    height: 38px;
+  }
+  
+  .back-to-main-btn img {
+    width: 18px;
+  }
+
+  #searchBtn {
+    padding: 10px 15px;
+    font-size: 14px;
   }
 
   .map-drawer-btn {

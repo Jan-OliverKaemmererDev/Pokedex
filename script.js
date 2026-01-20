@@ -47,6 +47,14 @@ async function loadAndShowPkm() {
   finishLoading();
 }
 
+function backToMain() {
+  isSearchActive = false;
+  document.getElementById("searchInput").value = "";
+  document.getElementById("backToMainBtn").classList.add("hidden");
+  renderList(allPokemon);
+  updateLoadMoreButtonVisibility();
+}
+
 function handleNewBatch(newBatch) {
   addBatchToAllPokemon(newBatch);
   renderList(allPokemon);
@@ -250,6 +258,7 @@ function searchPokemon() {
 async function processSearch(query) {
   showLoadingSpinner();
   isSearchActive = true;
+  document.getElementById("backToMainBtn").classList.remove("hidden");
   let matches = await performSearchLoop(query);
   currentList = matches;
   displaySearchResults(matches);
@@ -315,6 +324,7 @@ function renderRegionButtons() {
 
 async function loadRegion(startId, endId) {
   if (isLoading) return;
+  document.getElementById("backToMainBtn").classList.add("hidden");
   isSearchActive = false;
   isLoading = true;
   currentMinId = startId;
