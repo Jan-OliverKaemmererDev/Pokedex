@@ -258,9 +258,9 @@ function searchPokemon() {
 async function processSearch(query) {
   showLoadingSpinner();
   isSearchActive = true;
-  document.getElementById("backToMainBtn").classList.remove("hidden");
   let matches = await performSearchLoop(query);
   currentList = matches;
+  document.getElementById("backToMainBtn").classList.remove("hidden");
   displaySearchResults(matches);
   hideLoadingSpinner();
 }
@@ -276,7 +276,6 @@ async function performSearchLoop(query) {
       } else {
         let freshPkm = await fetchPokemonData(id);
         if (freshPkm) {
-          allPokemon.push(freshPkm);
           matches.push(freshPkm);
         }
       }
