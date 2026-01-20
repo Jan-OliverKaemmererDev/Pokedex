@@ -7,6 +7,7 @@ const step = 25;
 let currentMinId = 1;
 let currentMaxId = 151;
 let isLoading = false;
+let lastScrollY = 0;
 
 async function init() {
   renderRegionButtons();
@@ -48,11 +49,20 @@ async function loadAndShowPkm() {
 }
 
 function backToMain() {
+  lastScrollY = window.scrollY;
   isSearchActive = false;
   document.getElementById("searchInput").value = "";
   document.getElementById("backToMainBtn").classList.add("hidden");
   renderList(allPokemon);
   updateLoadMoreButtonVisibility();
+  setTimeout(restoreScrollPosition, 100);
+}
+
+function restoreScrollPosition() {
+    window.scrollTo({
+        top: lastScrollY,
+        behavior: 'instant'
+    });
 }
 
 function handleNewBatch(newBatch) {

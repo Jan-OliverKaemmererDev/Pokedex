@@ -4,13 +4,13 @@
   }
 
   header {
-    padding: 15px 0;
+    padding: 10px 0;
   }
 
   .header-content {
     flex-direction: column;
     gap: 20px;
-    padding: 10px 20px 50px 20px;
+    padding: 10px 20px 40px 20px;
   }
 
   .main-logo {
@@ -36,7 +36,7 @@
   }
   
   .back-to-main-btn img {
-    width: 18px;
+    width: 25px;
   }
 
   #searchBtn {
